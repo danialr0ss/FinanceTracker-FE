@@ -2,7 +2,7 @@ import ShortcutButton from "@/components/ShortcutButton";
 import { BiCategory } from "react-icons/bi";
 import { FaRegCalendarCheck } from "react-icons/fa6";
 import { GrPieChart } from "react-icons/gr";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
+import UpdateBalanceButton from "@/components/UpdateBalanceButton";
 
 export default function Home() {
   const username = "User";
@@ -32,11 +32,6 @@ export default function Home() {
     {
       title: "Purchase Breakdown",
       icon: GrPieChart,
-      href: "",
-    },
-    {
-      title: "Update Balance",
-      icon: FaMoneyBillTransfer,
       href: "",
     },
   ];
@@ -75,14 +70,26 @@ export default function Home() {
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
         <h1 className="text-3xl">{`Good ${greet()}, ${username}`}</h1>
         <div className="flex flex-1 justify-evenly gap-16">
-          {shortcuts.map((item, index) => (
-            <ShortcutButton
-              key={index}
-              title={item.title}
-              href={item.href}
-              icon={item.icon}
-            />
-          ))}
+          {shortcuts.map((item, index) =>
+            item.dialog ? (
+              <item.dialog>
+                <ShortcutButton
+                  key={index}
+                  title={item.title}
+                  href={item.href}
+                  icon={item.icon}
+                />
+              </item.dialog>
+            ) : (
+              <ShortcutButton
+                key={index}
+                title={item.title}
+                href={item.href}
+                icon={item.icon}
+              />
+            )
+          )}
+          <UpdateBalanceButton />
         </div>
         <div className="flex flex-1 justify-evenly">
           <div className="">
