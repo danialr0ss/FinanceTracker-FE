@@ -119,38 +119,45 @@ export default function ExpensesCard({ id, price, label, date }) {
   }, []);
 
   return (
-    <div className="h-64 w-full p-3 border rounded-lg flex flex-col justify-start items-start duration-100">
+    <div className="h-64 w-full p-6 border rounded-lg flex flex-col justify-start items-start duration-100">
       {isEditting ? (
-        <form onSubmit={handleSubmit(handleUpdatePurchase)} className="w-full">
-          <div className={"space-y-2 w-full"} ref={editRef}>
-            <div className="flex items-center gap-x-2 font-bold ">
-              $
-              <Input
-                className="text-lg"
-                placeholder="Amount"
-                {...register("price", {
-                  required: "Required",
-                  pattern: /^\d+(\.\d+)?$/,
-                })}
-                onKeyDown={handlePressEnter}
-              />
-            </div>
+        <form
+          onSubmit={handleSubmit(handleUpdatePurchase)}
+          className="w-full h-full"
+        >
+          <div
+            className={"flex flex-col justify-between space-y-2 w-full h-full"}
+            ref={editRef}
+          >
             <div className="space-y-2">
-              <Input
-                className="text-lg font-bold"
-                placeholder="Title"
-                {...register("label", {
-                  required: "Required",
-                })}
-                onKeyDown={handlePressEnter}
-              />
-              <Input
-                className="h-full resize-none overflow-auto text-gray-500"
-                placeholder="Date"
-                {...register("date", { required: "Required" })}
-                type="date"
-                onKeyDown={handlePressEnter}
-              />
+              <div className="flex items-center gap-x-2 font-bold ">
+                $
+                <Input
+                  className="text-lg"
+                  placeholder="Amount"
+                  {...register("price", {
+                    required: "Required",
+                    pattern: /^\d+(\.\d+)?$/,
+                  })}
+                  onKeyDown={handlePressEnter}
+                />
+              </div>
+              <div className="space-y-2">
+                <Input
+                  className="text-lg font-bold"
+                  placeholder="Title"
+                  {...register("label", {
+                    required: "Required",
+                  })}
+                  onKeyDown={handlePressEnter}
+                />
+                <Input
+                  className="text-gray-500"
+                  {...register("date", { required: "Required" })}
+                  type="date"
+                  onKeyDown={handlePressEnter}
+                />
+              </div>
             </div>
             <div className="w-full flex justify-evenly gap-x-2 text-5xl rounded-lg ">
               <button type="submit">
