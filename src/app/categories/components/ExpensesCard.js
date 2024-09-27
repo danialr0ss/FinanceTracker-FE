@@ -160,11 +160,11 @@ export default function ExpensesCard({ id, price, label, date }) {
               </div>
             </div>
             <div className="w-full flex justify-evenly gap-x-2 text-5xl rounded-lg ">
-              <button type="submit">
-                <IoIosCheckmarkCircleOutline className="p-2 text-green-500 rounded-lg hover:bg-green-500 hover:text-white" />
-              </button>
               <button onClick={handleCancelEditting}>
                 <IoIosCloseCircleOutline className="p-2 text-red-500 rounded-lg hover:bg-red-500 hover:text-white" />
+              </button>
+              <button type="submit">
+                <IoIosCheckmarkCircleOutline className="p-2 text-green-500 rounded-lg hover:bg-green-500 hover:text-white" />
               </button>
             </div>
           </div>
