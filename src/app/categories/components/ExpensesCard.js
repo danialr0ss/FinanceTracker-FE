@@ -192,15 +192,15 @@ export default function ExpensesCard({ id, price, label, date }) {
                 </DialogDescription>
                 <div className="flex justify-between items-center">
                   <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
                     <Button
                       variant="destructive"
                       onClick={() => handleDeleteExpenses(id)}
                     >
                       Delete
                     </Button>
-                  </DialogClose>
-                  <DialogClose asChild>
-                    <Button variant="outline">Cancel</Button>
                   </DialogClose>
                 </div>
               </DialogContent>

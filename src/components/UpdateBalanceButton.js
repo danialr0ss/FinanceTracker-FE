@@ -28,10 +28,10 @@ export default function () {
         </div>
         <div className="flex justify-between items-center">
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button onClick={() => {}}>Update</Button>
           </DialogClose>
           <DialogClose asChild>
-            <Button onClick={() => {}}>Update</Button>
+            <Button variant="outline">Cancel</Button>
           </DialogClose>
         </div>
       </DialogContent>
