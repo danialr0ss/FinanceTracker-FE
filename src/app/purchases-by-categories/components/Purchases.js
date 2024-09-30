@@ -10,7 +10,7 @@ export default function Purchases() {
   const reversedPurchases = [...selectedCategory?.purchases].reverse();
 
   return (
-    <div className={"w-full h-full bg-white border rounded-xl p-8"}>
+    <div className={"w-full h-full bg-white border-4 rounded-xl p-8"}>
       {selectedCategory.name?.length !== 0 ? (
         <div
           className={

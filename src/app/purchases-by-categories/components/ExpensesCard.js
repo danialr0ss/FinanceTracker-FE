@@ -86,7 +86,6 @@ export default function ExpensesCard({ id, price, label, date }) {
   };
 
   const handleUpdatePurchase = (data) => {
-    console.log(data);
     const newPurchase = {
       id: id,
       label: data.label.trim(),
