@@ -68,7 +68,7 @@ export default function Home() {
   return (
     <div className="min-w-[1850px] w-screen p-16 bg-backgroundColor">
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
-        <h1 className="text-3xl">{`Good ${greet()}, ${username}`}</h1>
+        <h1 className="text-3xl font-bold">{`Good ${greet()}, ${username}`}</h1>
         <div className="flex flex-1 justify-evenly gap-16">
           {shortcuts.map((item, index) =>
             item.dialog ? (
@@ -93,7 +93,7 @@ export default function Home() {
         </div>
         <div className="flex flex-1 justify-evenly">
           <div className="">
-            <h2 className="text-2xl pb-8">Recent Purchases</h2>
+            <h2 className="text-2xl pb-8 font-bold">Recent Purchases</h2>
             <div className="border-2 rounded-xl p-8 w-[750px] h-[300px] overflow-scroll">
               <div className="text-xl font-bold m-4">
                 <span className="w-48 inline-block">Date</span>
@@ -110,7 +110,7 @@ export default function Home() {
             </div>
           </div>
           <div>
-            <h2 className="text-2xl pb-8">Summary</h2>
+            <h2 className="text-2xl pb-8 font-bold">Summary</h2>
             <div className="border-2 rounded-xl p-8 w-[750px] h-[300px] ">
               <div className="text-xl">
                 <div className="p-4 flex justify-between">

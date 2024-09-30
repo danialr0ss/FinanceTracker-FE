@@ -118,7 +118,7 @@ export default function ExpensesCard({ id, price, label, date }) {
   }, []);
 
   return (
-    <div className="h-64 w-full p-6 border rounded-lg flex flex-col justify-start items-start duration-100">
+    <div className="h-64 w-full p-6 border-2 rounded-lg flex flex-col justify-start items-start duration-100">
       {isEditting ? (
         <form
           onSubmit={handleSubmit(handleUpdatePurchase)}

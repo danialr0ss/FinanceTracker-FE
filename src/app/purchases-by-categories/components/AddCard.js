@@ -105,7 +105,7 @@ export default function AddCard() {
       <button onClick={handleAdding} ref={addRef} className="h-fit">
         <div
           className={
-            "h-64 w-full border rounded-lg flex justify-center items-center hover:bg-gray-200 transition-all duration-500 ease-in-out"
+            "h-64 w-full border-2 rounded-lg flex justify-center items-center hover:bg-gray-200 transition-all duration-500 ease-in-out"
           }
         >
           <CiSquarePlus className={"text-5xl"} />
@@ -117,7 +117,7 @@ export default function AddCard() {
             isAnimating ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="h-64 w-full p-3 border rounded-lg flex flex-col justify-start items-start">
+          <div className="h-64 w-full p-3 border-2 rounded-lg flex flex-col justify-start items-start">
             <form onSubmit={handleSubmit(handleAddPurchase)} className="w-full">
               <div className={"space-y-2 "} ref={editRef}>
                 <div className="flex items-center gap-x-2 font-bold">

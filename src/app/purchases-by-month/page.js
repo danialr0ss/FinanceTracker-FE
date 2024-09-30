@@ -138,10 +138,10 @@ export default function Page() {
   return (
     <div className="min-h-screen min-w-screen bg-backgroundColor p-16 overflow-auto border">
       <div className="h-full flex flex-col bg-white border-2 rounded-xl p-16 space-y-8">
-        <h1 className="text-3xl flex-1">Purchases</h1>
+        <h1 className="text-3xl flex-1 font-bold">Purchases</h1>
         <div className="flex-1 flex justify-center">
           <Select onValueChange={setSelectedOption}>
-            <SelectTrigger className="w-3/4 text-lg p-8">
+            <SelectTrigger className="w-3/4 text-lg p-8 border-2">
               <SelectValue placeholder="Select A Month" />
             </SelectTrigger>
             <SelectContent>
@@ -158,7 +158,7 @@ export default function Page() {
           </Select>
         </div>
         <div className="flex-1 flex gap-8">
-          <div className="w-[400px] flex flex-col rounded-xl border-4 border-borderColor p-8 space-y-8">
+          <div className="w-[400px] flex flex-col rounded-xl border-2 border-borderColor p-8 space-y-8">
             <div>
               <h2 className="text-lg mb-4">Summary</h2>
               <div className="w-full border-t-2 border-black" />
@@ -188,7 +188,7 @@ export default function Page() {
               <span>$1470.45</span>
             </div>
           </div>
-          <div className="flex-1 rounded-xl border-4 border-borderColor p-8">
+          <div className="flex-1 rounded-xl border-2 border-borderColor p-8">
             <div>
               <div className="text-lg  mb-4">
                 <span className="mr-32">Amount</span>
