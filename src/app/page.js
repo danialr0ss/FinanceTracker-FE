@@ -22,12 +22,12 @@ export default function Home() {
     {
       title: "Purchases By Category",
       icon: BiCategory,
-      href: "/categories",
+      href: "/purchases-by-categories",
     },
     {
-      title: "Purchases By Date",
+      title: "Purchases By Month",
       icon: FaRegCalendarCheck,
-      href: "/",
+      href: "/purchases-by-month",
     },
     {
       title: "Purchase Breakdown",
@@ -66,7 +66,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-w-[1850px] w-screen p-16 bg-backgroundColor overflow-auto">
+    <div className="min-w-[1850px] w-screen p-16 bg-backgroundColor">
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
         <h1 className="text-3xl">{`Good ${greet()}, ${username}`}</h1>
         <div className="flex flex-1 justify-evenly gap-16">
