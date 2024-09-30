@@ -15,7 +15,7 @@ export default function () {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="w-56 h-56 p-4 rounded-xl border-4 border-gray-500 flex flex-col justify-evenly items-center hover:bg-gray-500 hover:text-white gap-4">
+        <button className="w-56 h-56 p-4 rounded-xl border-2 border-gray-500 flex flex-col justify-evenly items-center hover:bg-gray-500 hover:text-white gap-4">
           <div className="text-center text-lg">Update Balance</div>
           <FaMoneyBillTransfer className="text-[80px]" />
         </button>

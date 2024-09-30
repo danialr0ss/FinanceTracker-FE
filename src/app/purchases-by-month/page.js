@@ -17,6 +17,33 @@ export default function Page() {
     { month: 6, year: 2024 },
   ];
 
+  const summary = [
+    {
+      header: "Month",
+      label: "February 2024",
+    },
+    {
+      header: "Days In Month",
+      label: "31",
+    },
+    {
+      header: "Purchases Made",
+      label: "78",
+    },
+    {
+      header: "Amount Spent",
+      label: "$2200.32",
+    },
+    {
+      header: "Most Expensive Purchase",
+      label: "$523.23",
+    },
+    {
+      header: "Most Spent Category",
+      label: "Entertainment",
+    },
+  ];
+
   const purchases = [
     {
       amount: "$150.00",
@@ -136,10 +163,10 @@ export default function Page() {
   }
   parseSQLDate();
   return (
-    <div className="min-h-screen min-w-screen bg-backgroundColor p-16 overflow-auto border">
-      <div className="h-full flex flex-col bg-white border-2 rounded-xl p-16 space-y-8">
-        <h1 className="text-3xl flex-1 font-bold">Purchases</h1>
-        <div className="flex-1 flex justify-center">
+    <div className="min-h-[600px] h-screen min-w-[1920px] bg-backgroundColor p-16 overflow-auto border">
+      <div className="min-h-[820px]  flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">
+        <h1 className="text-3xl font-bold">Purchases</h1>
+        <div className="flex justify-center">
           <Select onValueChange={setSelectedOption}>
             <SelectTrigger className="w-3/4 text-lg p-8 border-2">
               <SelectValue placeholder="Select A Month" />
@@ -147,7 +174,7 @@ export default function Page() {
             <SelectContent>
               {dates.map((item) => (
                 <SelectItem
-                  value={item}
+                  value={`${item.month} ${item.year}}`}
                   key={`${monthToString(item.month)} ${item.year}}`}
                   className="text-lg"
                 >
@@ -157,59 +184,39 @@ export default function Page() {
             </SelectContent>
           </Select>
         </div>
-        <div className="flex-1 flex gap-8">
+        <div className="flex-1 flex gap-8 min-w-[500px]">
           <div className="w-[400px] flex flex-col rounded-xl border-2 border-borderColor p-8 space-y-8">
             <div>
-              <h2 className="text-lg mb-4">Summary</h2>
+              <h2 className="text-lg mb-4 font-bold">Summary</h2>
               <div className="w-full border-t-2 border-black" />
             </div>
-            <div className="flex justify-between">
-              <span className="flex justify-between">Month :</span>
-              <span>February 2024</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="flex justify-between">Days In The Month :</span>
-              <span>31</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Purchases Made : </span>
-              <span>54</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="flex justify-between">Amount Spent :</span>
-              <span>$2200.32</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="flex justify-between">Most Spent Day :</span>
-              <span>Monday, 15th</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="flex justify-between">Most Spent Category:</span>
-              <span>$1470.45</span>
-            </div>
+            {summary.map((item) => (
+              <div className="flex justify-between">
+                <span className="font-bold">{`${item.header} :`}</span>
+                <span>{item.label}</span>
+              </div>
+            ))}
           </div>
           <div className="flex-1 rounded-xl border-2 border-borderColor p-8">
-            <div>
-              <div className="text-lg  mb-4">
-                <span className="mr-32">Amount</span>
-                <span className="mr-32">Time</span>
-                <span className="mr-56">Date</span>
-                <span className="mr-72">Label</span>
-                <span>Type</span>
-              </div>
-              <div className="w-full border-t-2 border-black" />
+            <div className="text-lg mb-4 font-bold">
+              <span className="mr-32">Amount</span>
+              <span className="mr-32">Time</span>
+              <span className="mr-56">Date</span>
+              <span className="mr-72">Label</span>
+              <span>Type</span>
             </div>
-            <div className="h space-y-8 overflow-auto border">
+            <div className="w-full border-t-2 border-black" />
+            <div className="h-[400px] py-6 space-y-8 overflow-auto">
               {purchases.map((item, index) => (
-                <div className="text-lg" key={index}>
+                <div className="text-lg border-b-2" key={index}>
                   <span className="w-[196px] inline-block">{item.amount}</span>
                   <span className="w-[170px] inline-block">
                     {item.datetime.time}
                   </span>
-                  <span className="w-[260px] inline-block">
+                  <span className="w-[268px] inline-block">
                     {item.datetime.date}
                   </span>
-                  <span className="w-[334px] inline-block  align-top truncate pr-4">
+                  <span className="w-[338px] h-fit inline-block  align-top truncate pr-4">
                     {item.label}
                   </span>
                   <span>{item.type}</span>
