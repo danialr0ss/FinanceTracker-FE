@@ -191,7 +191,7 @@ export default function Page() {
               <div className="w-full border-t-2 border-black" />
             </div>
             {summary.map((item) => (
-              <div className="flex justify-between">
+              <div className="flex justify-between" key={item.header}>
                 <span className="font-bold">{`${item.header} :`}</span>
                 <span>{item.label}</span>
               </div>
