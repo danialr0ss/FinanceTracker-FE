@@ -5,8 +5,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef, useEffect } from "react";
 import { addCategory } from "@/store/slices/historySlice";
 import { setCurrentCategory } from "@/store/slices/historySlice";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import ActiveButton from "./ActiveButton";
+import BackButton from "@/components/BackButton";
 
 export default function Sidebar() {
   const [isAdding, setIsAdding] = useState(false);
@@ -96,19 +96,15 @@ export default function Sidebar() {
   return (
     <div
       className={
-        "w-96 h-full bg-white rounded-xl border-2 px-2 py-8 gap-y-4 flex flex-col justify-between items-center"
+        "w-96 h-full bg-white rounded-xl border-2 px-12 py-8 gap-y-6 flex flex-col justify-between items-center"
       }
     >
-      <a
-        className="w-full flex justify-start items-center rounded-xl px-10  hover:opacity-50"
-        href="/"
-      >
-        <IoMdArrowRoundBack className="text-3xl mr-4" />
-        <div className={"text-xl font-bold"}>Back</div>
-      </a>
-      <div className="w-full flex justify-start items-center rounded-xl p-10 py-4 ">
-        <BiCategory className="text-3xl mr-4" />
-        <div className={"text-xl font-bold"}>Categories</div>
+      <div className="w-full flex flex-col justify-center items-start rounded-xl gap-y-10">
+        <BackButton />
+        <div className={"text-xl font-bold flex"}>
+          <BiCategory className="text-3xl mr-4" />
+          Categories
+        </div>
       </div>
       <div className={"h-full text-center space-y-4 overflow-auto"}>
         {categories.map((item, index) => (

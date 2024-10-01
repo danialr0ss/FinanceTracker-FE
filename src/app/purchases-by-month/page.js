@@ -1,4 +1,5 @@
 "use client";
+import BackButton from "@/components/BackButton";
 import {
   Select,
   SelectContent,
@@ -165,10 +166,13 @@ export default function Page() {
   return (
     <div className="min-h-[600px] h-screen min-w-[1920px] bg-backgroundColor p-16 overflow-auto border">
       <div className="min-h-[820px]  flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">
-        <h1 className="text-3xl font-bold">Purchases</h1>
+        <BackButton />
         <div className="flex justify-center">
+          <div className="w-[540px] mr-10 text-3xl font-bold flex justify-center items-center ">
+            Purchases
+          </div>
           <Select onValueChange={setSelectedOption}>
-            <SelectTrigger className="w-3/4 text-lg p-8 border-2">
+            <SelectTrigger className="text-lg p-8 border-2">
               <SelectValue placeholder="Select A Month" />
             </SelectTrigger>
             <SelectContent>
