@@ -164,8 +164,8 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-[600px] h-screen min-w-[1920px] bg-backgroundColor p-16 overflow-auto border">
-      <div className="min-h-[820px]  flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">
+    <div className="w-full h-full bg-backgroundColor p-16 overflow-auto border">
+      <div className="flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">
         <BackButton />
         <div className="flex justify-center">
           <div className="w-[540px] mr-10 text-3xl font-bold flex justify-center items-center ">

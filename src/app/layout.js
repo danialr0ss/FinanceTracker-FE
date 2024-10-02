@@ -13,7 +13,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <ReduxProvider>
-        <body className={inter.className}>{children}</body>
+        <body
+          className={`${inter.className} min-h-[947px] min-w-[1920px] w-screen h-screen`}
+        >
+          {children}
+        </body>
       </ReduxProvider>
     </html>
   );

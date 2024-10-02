@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <div
       className={
-        "h-screen w-screen min-w-[1400px] min-h-[920px] flex justify-center items-center bg-backgroundColor p-16 gap-x-4"
+        "w-full h-full flex justify-center items-center bg-backgroundColor p-16 gap-x-4"
       }
     >
       <Sidebar />

@@ -25,8 +25,8 @@ export default function Page() {
   };
 
   return (
-    <div className="min-w-[1920px] h-screen min-h-[918px] bg-backgroundColor p-16">
-      <div className="h-full rounded-xl bg-white border-2 p-16 flex">
+    <div className="h-full w-full bg-backgroundColor p-16">
+      <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
         <img
           className="w-1/2 border rounded-xl object-contain bg-imageBackground"
           src="https://blogs.nottingham.ac.uk/studentlife/files/2019/08/Saving-Budget-Piggy.gif"
