@@ -115,7 +115,7 @@ export default function ExpensesCard({ id, price, label, date }) {
     return () => {
       document.removeEventListener("mousedown", handleClickOff);
     };
-  }, []);
+  }, [handleCancelEditting]);
 
   return (
     <div className="h-64 w-full p-6 border-2 rounded-lg flex flex-col justify-start items-start duration-100">

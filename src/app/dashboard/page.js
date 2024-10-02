@@ -72,9 +72,8 @@ export default function Home() {
         <div className="flex flex-1 justify-evenly gap-16">
           {shortcuts.map((item, index) =>
             item.dialog ? (
-              <item.dialog>
+              <item.dialog key={index}>
                 <ShortcutButton
-                  key={index}
                   title={item.title}
                   href={item.href}
                   icon={item.icon}

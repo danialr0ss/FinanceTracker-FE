@@ -53,6 +53,7 @@ module.exports = {
         },
         backgroundColor: "#edf2f7",
         borderColor: "#6B7280",
+        imageBackground: "#6ca1b1",
       },
       borderRadius: {
         lg: "var(--radius)",

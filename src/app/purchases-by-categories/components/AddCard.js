@@ -91,7 +91,7 @@ export default function AddCard() {
     return () => {
       document.removeEventListener("mousedown", handleClickOff);
     };
-  }, []);
+  }, [handleCancelAdding]);
 
   useEffect(() => {
     if (isAdding) {

@@ -162,7 +162,7 @@ export default function Page() {
     time += meridiem;
     return { date: `${date} ${month} ${year}`, time: time };
   }
-  parseSQLDate();
+
   return (
     <div className="min-h-[600px] h-screen min-w-[1920px] bg-backgroundColor p-16 overflow-auto border">
       <div className="min-h-[820px]  flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">

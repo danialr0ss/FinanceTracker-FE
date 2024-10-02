@@ -1,4 +1,4 @@
-export default function ({ title, icon: Icon, href }) {
+export default function ShortcutButton({ title, icon: Icon, href }) {
   return (
     <a
       href={href}
