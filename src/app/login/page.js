@@ -15,9 +15,14 @@ export default function Page() {
     formState: { errors },
   } = useForm();
 
-  const toggleShowPassword = (e) => {
+  const showPassword = (e) => {
     e.preventDefault();
-    setIsShowingPassword((prevState) => !prevState);
+    setIsShowingPassword(true);
+  };
+
+  const hidePassword = (e) => {
+    e.preventDefault();
+    setIsShowingPassword(false);
   };
 
   const submitForm = (data) => {
@@ -28,10 +33,11 @@ export default function Page() {
     <div className="h-full w-full bg-backgroundColor p-16">
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
         <img
-          className="w-1/2 border rounded-xl object-contain bg-imageBackground"
+          className="w-1/2 border-2 rounded-xl object-contain bg-imageBackground"
           src="https://blogs.nottingham.ac.uk/studentlife/files/2019/08/Saving-Budget-Piggy.gif"
+          alt="Financial Illustration"
         />
-        <div className="w-1/2 py-32 px-48">
+        <div className="w-1/2 py-32 pl-48 pr-32">
           <form
             className="flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
@@ -42,7 +48,6 @@ export default function Page() {
 
               <Input
                 {...register("username", { required: true })}
-                error={(!!errors.username).toString()}
                 placeholder="Username"
               />
             </div>
@@ -53,12 +58,12 @@ export default function Page() {
                 <Input
                   type={isShowingPassword ? "text" : "password"}
                   {...register("password", { required: true })}
-                  error={(!!errors.password).toString()}
                   placeholder="Password"
                 />
                 <button
                   className="absolute right-4 top-2.5"
-                  onClick={toggleShowPassword}
+                  onMouseDown={showPassword}
+                  onMouseUp={hidePassword}
                 >
                   {isShowingPassword ? (
                     <FaRegEyeSlash className="text-xl" />
@@ -70,7 +75,10 @@ export default function Page() {
             </div>
             <Button type="submit">Log In</Button>
             <span>
-              Don't have an Account? <a className="text-blue-600">Sign Up</a>
+              Don't have an account?{" "}
+              <a className="text-blue-600" href="/register">
+                Sign Up
+              </a>
             </span>
           </form>
         </div>
