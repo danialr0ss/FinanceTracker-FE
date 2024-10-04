@@ -29,7 +29,7 @@ export default function Page() {
       return;
     }
 
-    //hide errors if they were shown before
+    //hide error message if they were shown before
     setIsMatchingPassword(true);
 
     delete data.retyped;
@@ -39,7 +39,7 @@ export default function Page() {
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
-        <div className="w-1/2 py-32 pl-48 pr-32">
+        <div className="w-1/2 py-32 pr-48 pl-32">
           <form
             className="flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
