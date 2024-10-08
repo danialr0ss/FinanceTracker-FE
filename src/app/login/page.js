@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import Spinner from "@/components/Spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   const [isShowingPassword, setIsShowingPassword] = useState(false);
@@ -51,15 +51,15 @@ export default function Page() {
         <div
           className={`w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden`}
         >
-          {!isLoading && (
+          {isLoading ? (
+            <Skeleton className={`h-full w-full rounded-xl`} />
+          ) : (
             <img
               className={`w-full h-full object-contain bg-imageBackground`}
               src={imageSrc}
               alt="Financial Illustration"
             />
           )}
-
-          {isLoading && <Spinner size={44} />}
         </div>
         <div className="w-1/2 py-32 pl-48 pr-32">
           <form

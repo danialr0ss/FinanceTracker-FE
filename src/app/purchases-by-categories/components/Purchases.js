@@ -2,7 +2,8 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import ExpensesCard from "./ExpensesCard";
 import AddCard from "./AddCard";
-import Spinner from "@/components/Spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function Purchases() {
   const [isLoading, setIsLoading] = useState(true);
   const selectedCategory = useSelector(
@@ -49,7 +50,7 @@ export default function Purchases() {
       ) : (
         <div className="w-full h-full flex justify-center items-center">
           {isLoading ? (
-            <Spinner size={44} />
+            <Skeleton className={`h-full w-full rounded-xl`} />
           ) : (
             <img
               src={imageSrc}

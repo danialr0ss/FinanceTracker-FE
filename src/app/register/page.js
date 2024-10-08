@@ -7,7 +7,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { useRegisterUserMutation } from "@/store/slices/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
-import Spinner from "@/components/Spinner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Page() {
   const [isShowingPassword, setIsShowingPassword] = useState(false);
@@ -185,7 +185,7 @@ export default function Page() {
         </div>
         <div className="w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden">
           {isLoading ? (
-            <Spinner size={44} />
+            <Skeleton className={`h-full w-full rounded-xl`} />
           ) : (
             <img
               className={`object-cover`}
