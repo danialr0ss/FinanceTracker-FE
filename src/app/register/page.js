@@ -13,9 +13,10 @@ export default function Page() {
   const [isShowingPassword, setIsShowingPassword] = useState(false);
   const [isShowingRetyped, setIsShowingRetyped] = useState(false);
   const [isMatchingPassword, setIsMatchingPassword] = useState(true);
-  const [registerUser, { isSuccess, isError }] = useRegisterUserMutation();
+  const [registerUser] = useRegisterUserMutation();
   const matchingErrorMessage = "passwords do not match";
-  const [registrationErrorMessage, setRegistrationErrorMessage] = useState("");
+  const [registerErrorMessage, setRegisterErrorMessage] = useState("");
+  const [registerSuccessMessage, setRegisterSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const imageSrc = "/registerImage.jpeg";
 
@@ -47,15 +48,11 @@ export default function Page() {
         //default value for new user balance
         account: { balance: 1000 },
       };
-      const response = await registerUser(body);
-
-      if (isError) {
-        setRegistrationErrorMessage(response.error.data.message);
-      }
-
+      await registerUser(body).unwrap();
+      setRegisterSuccessMessage("User Registered Successfully");
       reset();
     } catch (err) {
-      console.error("Error registering new user, ", err.error);
+      setRegisterErrorMessage(err.data.message);
     }
   };
 
@@ -72,6 +69,18 @@ export default function Page() {
     };
   }, [imageSrc]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setRegisterErrorMessage("");
+    }, 5000);
+  }, [registerErrorMessage]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setRegisterSuccessMessage("");
+    }, 5000);
+  }, [registerSuccessMessage]);
+
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
@@ -80,16 +89,16 @@ export default function Page() {
             className="w-full flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
           >
-            {isSuccess && (
+            {registerSuccessMessage && (
               <ActionStatus
                 variant={"success"}
-                description="User Registered Successfully"
+                description={registerSuccessMessage}
               />
             )}
-            {isError && (
+            {registerErrorMessage && (
               <ActionStatus
                 variant={"destructive"}
-                description={registrationErrorMessage}
+                description={registerErrorMessage}
               />
             )}
             <span className="text-4xl pb-4">Create an account</span>
