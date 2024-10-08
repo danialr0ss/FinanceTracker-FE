@@ -7,8 +7,11 @@ import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { useLoginMutation } from "@/store/slices/authApi";
+import { ActionStatus } from "@/components/ActionStatus";
+import { useRouter } from "next/navigation";
 export default function Page() {
+  const router = useRouter();
   const [isShowingPassword, setIsShowingPassword] = useState(false);
   const imageSrc = "/loginImage.gif";
   const {
@@ -17,6 +20,8 @@ export default function Page() {
     formState: { errors },
   } = useForm();
   const [isLoading, setIsLoading] = useState(true);
+  const [login] = useLoginMutation();
+  const [loginErrorMessage, setLoginErrorMessage] = useState("");
 
   const showPassword = (e) => {
     e.preventDefault();
@@ -28,8 +33,13 @@ export default function Page() {
     setIsShowingPassword(false);
   };
 
-  const submitForm = (data) => {
-    console.log(data);
+  const submitForm = async (data) => {
+    try {
+      await login(data).unwrap();
+      router.push("register");
+    } catch (err) {
+      setLoginErrorMessage(err.data.message);
+    }
   };
 
   useEffect(() => {
@@ -66,12 +76,18 @@ export default function Page() {
             className="flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
           >
-            <span className="text-3xl">Welcome Back!</span>
+            {loginErrorMessage && (
+              <ActionStatus
+                variant={"destructive"}
+                description={loginErrorMessage}
+              />
+            )}
+            <span className="text-4xl pb-4">Welcome Back!</span>
             <div className="space-y-2">
               <label className="mr-4">Username</label>
 
               <Input
-                {...register("username", { required: true })}
+                {...register("name", { required: true })}
                 placeholder="Username"
               />
             </div>
@@ -101,7 +117,7 @@ export default function Page() {
             <span>
               Don't have an account?{" "}
               <a className="text-blue-600" href="/register">
-                Sign Up
+                Register
               </a>
             </span>
           </form>

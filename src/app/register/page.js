@@ -92,7 +92,7 @@ export default function Page() {
                 description={registrationErrorMessage}
               />
             )}
-            <span className="text-3xl">Create an account</span>
+            <span className="text-4xl pb-4">Create an account</span>
             <div className="space-y-2">
               <div>
                 <label className="mr-4">Username</label>

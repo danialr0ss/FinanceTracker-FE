@@ -7,7 +7,17 @@ const authApi = createApi({
     registerUser: build.mutation({
       query: (body) => {
         return {
-          url: "/user/register",
+          url: "/auth/register",
+          method: "POST",
+          body: body,
+        };
+      },
+      invalidatesTags: ["Auth"],
+    }),
+    login: build.mutation({
+      query: (body) => {
+        return {
+          url: "/auth/login",
           method: "POST",
           body: body,
         };
@@ -17,5 +27,5 @@ const authApi = createApi({
   }),
 });
 
-export const { useRegisterUserMutation } = authApi;
+export const { useRegisterUserMutation, useLoginMutation } = authApi;
 export default authApi;
