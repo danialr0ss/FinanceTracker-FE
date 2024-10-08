@@ -1,12 +1,13 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { useRegisterUserMutation } from "@/store/slices/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
+import Spinner from "@/components/Spinner";
 
 export default function Page() {
   const [isShowingPassword, setIsShowingPassword] = useState(false);
@@ -15,6 +16,8 @@ export default function Page() {
   const [registerUser, { isSuccess, isError }] = useRegisterUserMutation();
   const matchingErrorMessage = "passwords do not match";
   const [registrationErrorMessage, setRegistrationErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const imageSrc = "/registerImage.jpeg";
 
   const {
     register,
@@ -55,6 +58,19 @@ export default function Page() {
       console.error("Error registering new user, ", err.error);
     }
   };
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = imageSrc;
+
+    img.onload = () => {
+      setIsLoading(false);
+    };
+
+    img.onerror = () => {
+      setIsLoading(false);
+    };
+  }, [imageSrc]);
 
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
@@ -167,11 +183,17 @@ export default function Page() {
             </span>
           </form>
         </div>
-        <img
-          className="w-1/2 border-2 rounded-xl object-cover"
-          src="https://images.pexels.com/photos/3194519/pexels-photo-3194519.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-          alt="Team Discussion"
-        />
+        <div className="w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden">
+          {isLoading ? (
+            <Spinner size={44} />
+          ) : (
+            <img
+              className={`object-cover`}
+              src={imageSrc}
+              alt="Team Discussion"
+            />
+          )}
+        </div>
       </div>
     </div>
   );

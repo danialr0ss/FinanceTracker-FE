@@ -5,15 +5,18 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Spinner from "@/components/Spinner";
 
 export default function Page() {
   const [isShowingPassword, setIsShowingPassword] = useState(false);
+  const imageSrc = "/loginImage.gif";
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [isLoading, setIsLoading] = useState(true);
 
   const showPassword = (e) => {
     e.preventDefault();
@@ -29,14 +32,35 @@ export default function Page() {
     console.log(data);
   };
 
+  useEffect(() => {
+    const img = new Image();
+    img.src = imageSrc;
+
+    img.onload = () => {
+      setIsLoading(false);
+    };
+
+    img.onerror = () => {
+      setIsLoading(false);
+    };
+  }, [imageSrc]);
+
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
-        <img
-          className="w-1/2 border-2 rounded-xl object-contain bg-imageBackground"
-          src="https://blogs.nottingham.ac.uk/studentlife/files/2019/08/Saving-Budget-Piggy.gif"
-          alt="Financial Illustration"
-        />
+        <div
+          className={`w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden`}
+        >
+          {!isLoading && (
+            <img
+              className={`w-full h-full object-contain bg-imageBackground`}
+              src={imageSrc}
+              alt="Financial Illustration"
+            />
+          )}
+
+          {isLoading && <Spinner size={44} />}
+        </div>
         <div className="w-1/2 py-32 pl-48 pr-32">
           <form
             className="flex flex-col justify-center gap-8"
