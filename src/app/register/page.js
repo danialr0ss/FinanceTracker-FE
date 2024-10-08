@@ -5,17 +5,22 @@ import { useState } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { useRegisterUserMutation } from "@/store/slices/authApi";
+import { ActionStatus } from "@/components/ActionStatus";
 
 export default function Page() {
   const [isShowingPassword, setIsShowingPassword] = useState(false);
   const [isShowingRetyped, setIsShowingRetyped] = useState(false);
   const [isMatchingPassword, setIsMatchingPassword] = useState(true);
+  const [registerUser, { isSuccess, isError }] = useRegisterUserMutation();
   const matchingErrorMessage = "passwords do not match";
+  const [registrationErrorMessage, setRegistrationErrorMessage] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const changeState = (e, setter, state) => {
@@ -23,7 +28,7 @@ export default function Page() {
     setter(state);
   };
 
-  const submitForm = (data) => {
+  const submitForm = async (data) => {
     if (data.password !== data.retyped) {
       setIsMatchingPassword(false);
       return;
@@ -32,18 +37,45 @@ export default function Page() {
     //hide error message if they were shown before
     setIsMatchingPassword(true);
 
-    delete data.retyped;
-    console.log(data);
+    try {
+      //format data so api can accept
+      const body = {
+        user: { name: data.username, password: data.password },
+        //default value for new user balance
+        account: { balance: 1000 },
+      };
+      const response = await registerUser(body);
+
+      if (isError) {
+        setRegistrationErrorMessage(response.error.data.message);
+      }
+
+      reset();
+    } catch (err) {
+      console.error("Error registering new user, ", err.error);
+    }
   };
 
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
-        <div className="w-1/2 py-32 pr-48 pl-32">
+        <div className="w-1/2 flex items-center pr-48 pl-32">
           <form
-            className="flex flex-col justify-center gap-8"
+            className="w-full flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
           >
+            {isSuccess && (
+              <ActionStatus
+                variant={"success"}
+                description="User Registered Successfully"
+              />
+            )}
+            {isError && (
+              <ActionStatus
+                variant={"destructive"}
+                description={registrationErrorMessage}
+              />
+            )}
             <span className="text-3xl">Create an account</span>
             <div className="space-y-2">
               <div>
@@ -83,6 +115,7 @@ export default function Page() {
                   onMouseDown={(e) =>
                     changeState(e, setIsShowingPassword, true)
                   }
+                  tabIndex="-1"
                   onMouseUp={(e) => changeState(e, setIsShowingPassword, false)}
                 >
                   {isShowingPassword ? (
@@ -113,6 +146,7 @@ export default function Page() {
                 />
                 <button
                   className="absolute right-4 top-2.5"
+                  tabIndex="-1"
                   onMouseDown={(e) => changeState(e, setIsShowingRetyped, true)}
                   onMouseUp={(e) => changeState(e, setIsShowingRetyped, false)}
                 >
