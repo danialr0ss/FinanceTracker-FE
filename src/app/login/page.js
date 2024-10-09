@@ -14,11 +14,7 @@ export default function Page() {
   const router = useRouter();
   const [isShowingPassword, setIsShowingPassword] = useState(false);
   const imageSrc = "/loginImage.gif";
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit } = useForm();
   const [isLoading, setIsLoading] = useState(true);
   const [login] = useLoginMutation();
   const [loginErrorMessage, setLoginErrorMessage] = useState("");
@@ -36,7 +32,7 @@ export default function Page() {
   const submitForm = async (data) => {
     try {
       await login(data).unwrap();
-      router.push("register");
+      router.push("/dashboard");
     } catch (err) {
       setLoginErrorMessage(err.data.message);
     }
@@ -54,6 +50,12 @@ export default function Page() {
       setIsLoading(false);
     };
   }, [imageSrc]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoginErrorMessage("");
+    }, 5000);
+  }, [loginErrorMessage]);
 
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
@@ -82,7 +84,13 @@ export default function Page() {
                 description={loginErrorMessage}
               />
             )}
-            <span className="text-4xl pb-4">Welcome Back!</span>
+            <div className="flex flex-col gap-2 pb-2">
+              <span className="text-4xl">Hi There, Welcome Back!</span>
+              <span className="text-xl text-gray-500">
+                Login to your account
+              </span>
+            </div>
+
             <div className="space-y-2">
               <label className="mr-4">Username</label>
 

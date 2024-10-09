@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-export function middleware(request) {
-  const token = request.cookies.get("token");
+export async function middleware(request) {
+  const token = request.cookies.get("token").value;
   if (token) {
     try {
-      jwt.verify(token, JWT_SECRET);
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verify`, {
+        method: "POST",
+        body: JSON.stringify({ token: token }),
+      });
+      return NextResponse.next();
     } catch (err) {
       console.error("Error Verifying Token ", err);
     }
