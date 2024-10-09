@@ -105,8 +105,8 @@ export default function Page() {
                 description={registerErrorMessage}
               />
             )}
-            <div className="flex flex-col gap-2 pb-4">
-              <span className="text-4xl ">Get Started with Us!</span>
+            <div className="flex flex-col gap-4 pb-4">
+              <span className="text-4xl">Get Started with Us!</span>
               <span className="text-xl text-gray-500">Create an account</span>
             </div>
 

@@ -84,8 +84,8 @@ export default function Page() {
                 description={loginErrorMessage}
               />
             )}
-            <div className="flex flex-col gap-2 pb-2">
-              <span className="text-4xl">Hi There, Welcome Back!</span>
+            <div className="flex flex-col gap-4 pb-2">
+              <span className="text-4xl">Welcome Back!</span>
               <span className="text-xl text-gray-500">
                 Login to your account
               </span>
