@@ -49,9 +49,13 @@ export default function Page() {
         account: { balance: 1000 },
       };
       await registerUser(body).unwrap();
+      // remove old notification if showing
+      setRegisterErrorMessage("");
       setRegisterSuccessMessage("User Registered Successfully");
       reset();
     } catch (err) {
+      // remove old notification if showing
+      setRegisterSuccessMessage("");
       setRegisterErrorMessage(err.data.message);
     }
   };
@@ -101,7 +105,11 @@ export default function Page() {
                 description={registerErrorMessage}
               />
             )}
-            <span className="text-4xl pb-4">Create an account</span>
+            <div className="flex flex-col gap-2 pb-4">
+              <span className="text-4xl ">Get Started with Us!</span>
+              <span className="text-xl text-gray-500">Create an account</span>
+            </div>
+
             <div className="space-y-2">
               <div>
                 <label className="mr-4">Username</label>
