@@ -94,43 +94,38 @@ export default function Page() {
                 />
               )}
             </div>
-
             <div
-              className={`space-y-2 transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
+              className={`flex flex-col gap-8 transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
             >
-              <label className="mr-4">Username</label>
+              <div className={`space-y-2`}>
+                <label className="mr-4">Username</label>
 
-              <Input
-                {...register("name", { required: true })}
-                placeholder="Username"
-              />
-            </div>
-            <div
-              className={`space-y-2  transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
-            >
-              <label className="mr-4">Password</label>
-              <div className="flex h-full relative ">
                 <Input
-                  type={isShowingPassword ? "text" : "password"}
-                  {...register("password", { required: true })}
-                  placeholder="Password"
+                  {...register("name", { required: true })}
+                  placeholder="Username"
                 />
-                <button
-                  className="absolute right-4 top-2.5"
-                  onMouseDown={showPassword}
-                  onMouseUp={hidePassword}
-                >
-                  {isShowingPassword ? (
-                    <FaRegEyeSlash className="text-xl" />
-                  ) : (
-                    <FaRegEye className="text-xl" />
-                  )}
-                </button>
               </div>
-            </div>
-            <div
-              className={`w-full flex flex-col space-y-8 transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
-            >
+              <div className={`space-y-2`}>
+                <label className="mr-4">Password</label>
+                <div className="flex h-full relative ">
+                  <Input
+                    type={isShowingPassword ? "text" : "password"}
+                    {...register("password", { required: true })}
+                    placeholder="Password"
+                  />
+                  <button
+                    className="absolute right-4 top-2.5"
+                    onMouseDown={showPassword}
+                    onMouseUp={hidePassword}
+                  >
+                    {isShowingPassword ? (
+                      <FaRegEyeSlash className="text-xl" />
+                    ) : (
+                      <FaRegEye className="text-xl" />
+                    )}
+                  </button>
+                </div>
+              </div>
               <Button type="submit">Log In</Button>
               <span>
                 Don't have an account?{" "}
