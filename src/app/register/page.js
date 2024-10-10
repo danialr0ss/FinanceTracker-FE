@@ -88,116 +88,130 @@ export default function Page() {
   return (
     <div className="h-full w-full bg-backgroundColor p-16">
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
-        <div className="w-1/2 flex items-center pr-48 pl-32">
+        <div className="w-1/2 flex items-center pr-48 pl-32 relative">
           <form
             className="w-full flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
           >
-            {registerSuccessMessage && (
-              <ActionStatus
-                variant={"success"}
-                description={registerSuccessMessage}
-              />
-            )}
-            {registerErrorMessage && (
-              <ActionStatus
-                variant={"destructive"}
-                description={registerErrorMessage}
-              />
-            )}
             <div className="flex flex-col gap-4 pb-4">
               <span className="text-4xl">Get Started with Us!</span>
               <span className="text-xl text-gray-500">Create an account</span>
             </div>
 
-            <div className="space-y-2">
-              <div>
-                <label className="mr-4">Username</label>
-                <label className="text-error text-xs">
-                  {errors.username?.message}
-                </label>
-              </div>
+            <div
+              className={`absolute w-[510px] top-44 transition-opacity duration-300 ease-in-out ${registerSuccessMessage || registerErrorMessage ? "opacity-100" : "opacity-0"}`}
+            >
+              {registerSuccessMessage && (
+                <ActionStatus
+                  variant={"success"}
+                  description={registerSuccessMessage}
+                />
+              )}
 
-              <Input
-                className={errors.username && "border-error"}
-                {...register("username", { required: "required" })}
-                placeholder="Username"
-                errors={errors?.username}
-              />
-            </div>
-            <div className="space-y-2">
-              <div>
-                <label className="mr-4">Password</label>
-                <label className="text-error text-xs">
-                  {errors.password?.message}
-                  {!isMatchingPassword && matchingErrorMessage}
-                </label>
-              </div>
-              <div className="flex h-full relative">
-                <Input
-                  className={
-                    (errors.password || !isMatchingPassword) && "border-error"
-                  }
-                  type={isShowingPassword ? "text" : "password"}
-                  {...register("password", { required: "required" })}
-                  placeholder="Password"
-                  errors={errors.password}
+              {registerErrorMessage && (
+                <ActionStatus
+                  variant={"destructive"}
+                  description={registerErrorMessage}
                 />
-                <button
-                  className="absolute right-4 top-2.5"
-                  onMouseDown={(e) =>
-                    changeState(e, setIsShowingPassword, true)
-                  }
-                  tabIndex="-1"
-                  onMouseUp={(e) => changeState(e, setIsShowingPassword, false)}
-                >
-                  {isShowingPassword ? (
-                    <FaRegEyeSlash className="text-xl" />
-                  ) : (
-                    <FaRegEye className="text-xl" />
-                  )}
-                </button>
-              </div>
+              )}
             </div>
-            <div className="space-y-2">
-              <div>
-                <label className="mr-4">Re-type Password</label>
-                <label className="text-error text-xs">
-                  {errors.retyped?.message}
-                  {!isMatchingPassword && matchingErrorMessage}
-                </label>
-              </div>
-              <div className="flex h-full relative">
+            <div
+              className={`w-full flex flex-col gap-8 transition-transform duration-200 ease-in-out ${registerSuccessMessage || registerErrorMessage ? "translate-y-16" : ""}`}
+            >
+              <div className="space-y-2">
+                <div>
+                  <label className="mr-4">Username</label>
+                  <label className="text-error text-xs">
+                    {errors.username?.message}
+                  </label>
+                </div>
                 <Input
-                  className={
-                    (errors.retyped || !isMatchingPassword) && "border-error"
-                  }
-                  type={isShowingRetyped ? "text" : "password"}
-                  {...register("retyped", { required: "required" })}
-                  placeholder="Password"
-                  errors={errors?.retyped}
+                  className={errors.username && "border-error"}
+                  {...register("username", { required: "required" })}
+                  placeholder="Username"
+                  errors={errors?.username}
                 />
-                <button
-                  className="absolute right-4 top-2.5"
-                  tabIndex="-1"
-                  onMouseDown={(e) => changeState(e, setIsShowingRetyped, true)}
-                  onMouseUp={(e) => changeState(e, setIsShowingRetyped, false)}
-                >
-                  {isShowingRetyped ? (
-                    <FaRegEyeSlash className="text-xl" />
-                  ) : (
-                    <FaRegEye className="text-xl" />
-                  )}
-                </button>
               </div>
+              <div className="space-y-2">
+                <div>
+                  <label className="mr-4">Password</label>
+                  <label className="text-error text-xs">
+                    {errors.password?.message}
+                    {!isMatchingPassword && matchingErrorMessage}
+                  </label>
+                </div>
+                <div className="flex h-full relative">
+                  <Input
+                    className={
+                      (errors.password || !isMatchingPassword) && "border-error"
+                    }
+                    type={isShowingPassword ? "text" : "password"}
+                    {...register("password", { required: "required" })}
+                    placeholder="Password"
+                    errors={errors.password}
+                  />
+                  <button
+                    className="absolute right-4 top-2.5"
+                    onMouseDown={(e) =>
+                      changeState(e, setIsShowingPassword, true)
+                    }
+                    tabIndex="-1"
+                    onMouseUp={(e) =>
+                      changeState(e, setIsShowingPassword, false)
+                    }
+                  >
+                    {isShowingPassword ? (
+                      <FaRegEyeSlash className="text-xl" />
+                    ) : (
+                      <FaRegEye className="text-xl" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div>
+                  <label className="mr-4">Re-type Password</label>
+                  <label className="text-error text-xs">
+                    {errors.retyped?.message}
+                    {!isMatchingPassword && matchingErrorMessage}
+                  </label>
+                </div>
+                <div className="flex h-full relative">
+                  <Input
+                    className={
+                      (errors.retyped || !isMatchingPassword) && "border-error"
+                    }
+                    type={isShowingRetyped ? "text" : "password"}
+                    {...register("retyped", { required: "required" })}
+                    placeholder="Password"
+                    errors={errors?.retyped}
+                  />
+                  <button
+                    className="absolute right-4 top-2.5"
+                    tabIndex="-1"
+                    onMouseDown={(e) =>
+                      changeState(e, setIsShowingRetyped, true)
+                    }
+                    onMouseUp={(e) =>
+                      changeState(e, setIsShowingRetyped, false)
+                    }
+                  >
+                    {isShowingRetyped ? (
+                      <FaRegEyeSlash className="text-xl" />
+                    ) : (
+                      <FaRegEye className="text-xl" />
+                    )}
+                  </button>
+                </div>
+              </div>
+              <Button type="submit">Create account</Button>
+              <span>
+                Already have an account?{" "}
+                <a className="text-blue-600" href="/login">
+                  Login
+                </a>
+              </span>
             </div>
-            <Button type="submit">Create account</Button>
-            <span>
-              Already have an account?{" "}
-              <a className="text-blue-600" href="/login">
-                Login
-              </a>
-            </span>
           </form>
         </div>
         <div className="w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden">
