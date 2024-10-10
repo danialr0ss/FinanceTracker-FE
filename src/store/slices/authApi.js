@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL,
+    baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL + "/auth",
     credentials: "include",
   }),
   tagTypes: ["Auth"],
@@ -10,7 +10,7 @@ const authApi = createApi({
     registerUser: build.mutation({
       query: (body) => {
         return {
-          url: "/auth/register",
+          url: "/register",
           method: "POST",
           body: body,
         };
@@ -20,7 +20,7 @@ const authApi = createApi({
     login: build.mutation({
       query: (body) => {
         return {
-          url: "/auth/login",
+          url: "/login",
           method: "POST",
           body: body,
         };
