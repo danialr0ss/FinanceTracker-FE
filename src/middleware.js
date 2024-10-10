@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-  const token = request.cookies.get("token").value;
+  const token = request.cookies.get("token")?.value;
   if (token) {
     try {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verify`, {

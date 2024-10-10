@@ -73,25 +73,31 @@ export default function Page() {
             />
           )}
         </div>
-        <div className="w-1/2 py-32 pl-48 pr-32">
+        <div className="w-1/2 py-32 pl-48 pr-32 relative">
           <form
             className="flex flex-col justify-center gap-8"
             onSubmit={handleSubmit(submitForm)}
           >
-            {loginErrorMessage && (
-              <ActionStatus
-                variant={"destructive"}
-                description={loginErrorMessage}
-              />
-            )}
             <div className="flex flex-col gap-4 pb-2">
               <span className="text-4xl">Welcome Back!</span>
               <span className="text-xl text-gray-500">
                 Login to your account
               </span>
             </div>
+            <div
+              className={`w-[510px] absolute top-56 transition-opacity duration-300 ease-in-out ${loginErrorMessage ? "opacity-100" : "opacity-0"}`}
+            >
+              {loginErrorMessage && (
+                <ActionStatus
+                  variant={"destructive"}
+                  description={loginErrorMessage}
+                />
+              )}
+            </div>
 
-            <div className="space-y-2">
+            <div
+              className={`space-y-2 transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
+            >
               <label className="mr-4">Username</label>
 
               <Input
@@ -99,10 +105,11 @@ export default function Page() {
                 placeholder="Username"
               />
             </div>
-            <div className="space-y-2">
+            <div
+              className={`space-y-2  transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
+            >
               <label className="mr-4">Password</label>
-
-              <div className="flex h-full relative">
+              <div className="flex h-full relative ">
                 <Input
                   type={isShowingPassword ? "text" : "password"}
                   {...register("password", { required: true })}
@@ -121,13 +128,17 @@ export default function Page() {
                 </button>
               </div>
             </div>
-            <Button type="submit">Log In</Button>
-            <span>
-              Don't have an account?{" "}
-              <a className="text-blue-600" href="/register">
-                Register
-              </a>
-            </span>
+            <div
+              className={`w-full flex flex-col space-y-8 transition-transform duration-200 ease-in-out ${loginErrorMessage ? "translate-y-16" : ""}`}
+            >
+              <Button type="submit">Log In</Button>
+              <span>
+                Don't have an account?{" "}
+                <a className="text-blue-600" href="/register">
+                  Register
+                </a>
+              </span>
+            </div>
           </form>
         </div>
       </div>
