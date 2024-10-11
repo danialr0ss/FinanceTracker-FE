@@ -1,5 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query";
-
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const accountApi = createApi({
   reducerPath: "accountApi",
   baseQuery: fetchBaseQuery({
@@ -17,13 +16,11 @@ const accountApi = createApi({
       invalidatesTags: ["Account"],
     }),
     updateBalance: build.mutation({
-      query: (body) => {
-        return {
-          url: "/update-balance",
-          method: "PATCH",
-          body: body,
-        };
-      },
+      query: (body) => ({
+        url: "/update-balance",
+        method: "PATCH",
+        body: body,
+      }),
       invalidatesTags: ["Auth"],
     }),
   }),

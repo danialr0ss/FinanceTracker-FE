@@ -30,6 +30,5 @@ const authApi = createApi({
   }),
 });
 
-export const { useRegisterUserMutation, useLoginMutation, useVerifyMutation } =
-  authApi;
+export const { useRegisterUserMutation, useLoginMutation } = authApi;
 export default authApi;
