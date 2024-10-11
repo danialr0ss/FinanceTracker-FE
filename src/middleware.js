@@ -8,6 +8,11 @@ export async function middleware(request) {
         method: "POST",
         body: JSON.stringify({ token: token }),
       });
+      const currUrl = request?.nextUrl?.pathname;
+      if (currUrl === "/login" || currUrl === "/register") {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+
       return NextResponse.next();
     } catch (err) {
       console.error("Error Verifying Token ", err);
@@ -17,5 +22,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|login|register).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
