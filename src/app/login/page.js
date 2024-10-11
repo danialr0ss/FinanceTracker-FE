@@ -7,7 +7,7 @@ import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useLoginMutation } from "@/store/slices/authApi";
+import { useLoginMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { useRouter } from "next/navigation";
 export default function Page() {
@@ -34,7 +34,7 @@ export default function Page() {
       await login(data).unwrap();
       router.push("/dashboard");
     } catch (err) {
-      setLoginErrorMessage(err.data.message);
+      setLoginErrorMessage(err.message);
     }
   };
 

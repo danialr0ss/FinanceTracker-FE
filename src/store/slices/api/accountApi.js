@@ -15,9 +15,9 @@ const accountApi = createApi({
       query: () => "/breakdown",
       invalidatesTags: ["Account"],
     }),
-    updateBalance: build.mutation({
+    updateBudget: build.mutation({
       query: (body) => ({
-        url: "/update-balance",
+        url: "/update-budget",
         method: "PATCH",
         body: body,
       }),
@@ -29,7 +29,7 @@ const accountApi = createApi({
 export const {
   useDailyLimitQuery,
   useBreakdownQuery,
-  useUpdateBalanceMutation,
+  useUpdateBudgetMutation,
 } = accountApi;
 
 export default accountApi;

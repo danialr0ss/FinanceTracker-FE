@@ -2,7 +2,7 @@ import ShortcutButton from "@/components/ShortcutButton";
 import { BiCategory } from "react-icons/bi";
 import { FaRegCalendarCheck } from "react-icons/fa6";
 import { GrPieChart } from "react-icons/gr";
-import UpdateBalanceButton from "@/components/UpdateBalanceButton";
+import UpdateBudgetButton from "@/components/UpdateBudgetButton";
 
 export default function Home() {
   const username = "User";
@@ -88,7 +88,7 @@ export default function Home() {
               />
             )
           )}
-          <UpdateBalanceButton />
+          <UpdateBudgetButton />
         </div>
         <div className="flex flex-1 justify-evenly">
           <div className="">

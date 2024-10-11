@@ -10,18 +10,22 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { useUpdateBalanceMutation } from "@/store/slices/accountApi";
+import { useUpdateBudgetMutation } from "@/store/slices/api/accountApi";
+import { useDispatch, useSelector } from "react-redux";
+import { updateBudgetState } from "@/store/slices/budgetSlice";
 
-export default function UpdateBalanceButton({}) {
+export default function UpdateBudgetButton({}) {
+  const dispatch = useDispatch();
+  const monthlyBudget = useSelector((state) => state.budget.value);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newBalance, setNewBalance] = useState(0);
+  const [newBudget, setNewBudget] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-  const [updateBalance] = useUpdateBalanceMutation();
+  const [updateBudget] = useUpdateBudgetMutation();
 
-  const processBalanceUpdate = async () => {
-    const parseBalance = newBalance;
-    if (parseBalance <= 0) {
-      const error = "Balance must be a valid number above 0";
+  const processBudgetUpdate = async () => {
+    const parseBudget = newBudget;
+    if (parseBudget <= 0) {
+      const error = "Budget must be a valid number above 0";
       setErrorMessage(error);
       throw Error(error);
     }
@@ -29,8 +33,9 @@ export default function UpdateBalanceButton({}) {
     setErrorMessage("");
 
     try {
-      const body = { balance: newBalance };
-      await updateBalance(body).unwrap();
+      const body = { Budget: newBudget };
+      await updateBudget(body).unwrap();
+      await dispatch(updateBudgetState(newBudget));
       console.log("success");
     } catch (err) {
       setErrorMessage(err.message);
@@ -38,10 +43,10 @@ export default function UpdateBalanceButton({}) {
     }
   };
 
-  const parseNewBalance = (newBalance) => {
-    const parsedVal = parseFloat(newBalance);
+  const parseNewBudget = (newBudget) => {
+    const parsedVal = parseFloat(newBudget);
 
-    if (isNaN(parsedVal) || parsedVal.toString() !== newBalance.trim()) {
+    if (isNaN(parsedVal) || parsedVal.toString() !== newBudget.trim()) {
       return 0;
     }
 
@@ -57,7 +62,7 @@ export default function UpdateBalanceButton({}) {
   // if succesfully updated, dialog will close else remain open
   const handleUpdateClick = async (e) => {
     try {
-      await processBalanceUpdate();
+      await processBudgetUpdate();
       setIsDialogOpen(false);
     } catch {
       setIsDialogOpen(true);
@@ -71,23 +76,28 @@ export default function UpdateBalanceButton({}) {
           className="w-56 h-56 p-4 rounded-xl border-2 border-gray-500 flex flex-col justify-evenly items-center hover:bg-gray-500 hover:text-white gap-4"
           onClick={() => setIsDialogOpen(true)}
         >
-          <div className="text-center text-lg">Update Balance</div>
+          <div className="text-center text-lg">Update Monthly Budget</div>
+
           <FaMoneyBillTransfer className="text-[80px]" />
         </button>
       </DialogTrigger>
       <DialogContent>
-        <DialogTitle>Update Balance</DialogTitle>
+        <DialogTitle>Update Budget</DialogTitle>
         <div className="flex flex-col gap-4 py-4">
-          <div className="space-4">
-            <span className="mr-4">Enter the new balance</span>
-            {errorMessage && (
-              <span className={`text-destructive text-xs outline-destructive`}>
-                {errorMessage}
-              </span>
-            )}
+          <div className="font-bold">
+            Current Monthly Budget: $
+            <span className={"font-normal"}>
+              {Number(monthlyBudget).toFixed(2)}
+            </span>
           </div>
+          <span className="mr-4">Enter new budget</span>
+          {errorMessage && (
+            <span className={`text-destructive text-xs outline-destructive`}>
+              {errorMessage}
+            </span>
+          )}
           <Input
-            onChange={(e) => setNewBalance(parseNewBalance(e.target.value))}
+            onChange={(e) => setNewBudget(parseNewBudget(e.target.value))}
             onKeyDown={handleOnEnter}
             className={`${errorMessage && "border-destructive"}`}
           />

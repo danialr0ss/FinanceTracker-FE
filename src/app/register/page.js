@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { useRegisterUserMutation } from "@/store/slices/authApi";
+import { useRegisterUserMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { Skeleton } from "@/components/ui/skeleton";
 

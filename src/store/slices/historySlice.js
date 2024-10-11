@@ -89,4 +89,4 @@ export const {
   addPurchase,
 } = historySlice.actions;
 
-export default historySlice.reducer;
+export default historySlice;
