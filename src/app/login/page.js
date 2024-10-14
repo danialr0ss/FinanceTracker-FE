@@ -34,7 +34,7 @@ export default function Page() {
       await login(data).unwrap();
       router.push("/dashboard");
     } catch (err) {
-      setLoginErrorMessage(err.message);
+      setLoginErrorMessage(err.data.message);
     }
   };
 

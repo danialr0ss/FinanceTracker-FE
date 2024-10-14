@@ -1,8 +1,8 @@
 import ShortcutButton from "@/components/ShortcutButton";
 import { BiCategory } from "react-icons/bi";
 import { FaRegCalendarCheck } from "react-icons/fa6";
-import { GrPieChart } from "react-icons/gr";
-import UpdateBudgetButton from "@/components/UpdateBudgetButton";
+import { RiAccountCircleLine } from "react-icons/ri";
+import AddPurchaseButton from "@/components/AddPurchaseButton";
 
 export default function Home() {
   const username = "User";
@@ -25,13 +25,13 @@ export default function Home() {
       href: "/purchases-by-categories",
     },
     {
-      title: "Purchases By Month",
+      title: "Purchase History",
       icon: FaRegCalendarCheck,
       href: "/purchases-by-month",
     },
     {
-      title: "Purchase Breakdown",
-      icon: GrPieChart,
+      title: "Account Settings",
+      icon: RiAccountCircleLine,
       href: "",
     },
   ];
@@ -68,8 +68,9 @@ export default function Home() {
   return (
     <div className="w-full h-full p-16 bg-backgroundColor">
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
-        <h1 className="text-3xl font-bold">{`Good ${greet()}, ${username}`}</h1>
+        <h1 className="text-3xl font-bold px-16">{`Good ${greet()}, ${username}`}</h1>
         <div className="flex flex-1 justify-evenly gap-16">
+          <AddPurchaseButton />
           {shortcuts.map((item, index) =>
             item.dialog ? (
               <item.dialog key={index}>
@@ -88,7 +89,6 @@ export default function Home() {
               />
             )
           )}
-          <UpdateBudgetButton />
         </div>
         <div className="flex flex-1 justify-evenly">
           <div className="">
