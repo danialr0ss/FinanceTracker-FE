@@ -1,7 +1,6 @@
 "use client";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogTitle,
   DialogTrigger,
@@ -9,77 +8,97 @@ import {
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useState } from "react";
-import { useUpdateBudgetMutation } from "@/store/slices/api/accountApi";
-import { updateBudgetState } from "@/store/slices/budgetSlice";
 import { TbReportMoney } from "react-icons/tb";
+import { useForm } from "react-hook-form";
+import { ActionStatus } from "./ActionStatus";
+import { useEffect } from "react";
+import { useAddPurchaseMutation } from "@/store/slices/api/purchaseApi";
 
-export default function AddPurchaseButton({}) {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [newBudget, setNewBudget] = useState(0);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [updateBudget] = useUpdateBudgetMutation();
+export default function AddPurchaseButton() {
+  const failedAddMessage = "Unable to add purchase";
+  const successAddMessage = "Successfully added purchase";
+  const tranformY = "translate-y-24";
 
-  const processBudgetUpdate = async () => {
-    const parseBudget = newBudget;
-    if (parseBudget <= 0) {
-      const error = "Budget must be a valid number above 0";
-      setErrorMessage(error);
-      throw Error(error);
-    }
+  const [addMessage, setAddMessage] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(null);
 
-    setErrorMessage("");
+  const [addPurchase, { isError, isSuccess }] = useAddPurchaseMutation();
 
-    try {
-      const body = { budget: newBudget };
-      await updateBudget(body).unwrap();
-      await dispatch(updateBudgetState(newBudget));
-      console.log("success");
-    } catch (err) {
-      setErrorMessage(err.message);
-      throw Error(err.message);
-    }
+  const defaultValues = {
+    defaultValues: { amount: 0, category: "", label: "" },
   };
 
-  const parseNewBudget = (newBudget) => {
-    const parsedVal = parseFloat(newBudget);
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm(defaultValues);
 
-    if (isNaN(parsedVal) || parsedVal.toString() !== newBudget.trim()) {
-      return 0;
+  const handleAddPurchase = async (data, e) => {
+    try {
+      data.amount = Number(data.amount);
+      console.log({ body: data });
+      await addPurchase(data).unwrap();
+    } catch (err) {
+      console.log(err);
     }
-
-    return parsedVal;
   };
 
   const handleOnEnter = (e) => {
+    console.log("in enter", e.key);
     if (e.key === "Enter") {
-      handleUpdateClick();
+      console.log("entering");
+      handleSubmit(handleAddPurchase);
     }
   };
 
-  // if succesfully updated, dialog will close else remain open
-  const handleUpdateClick = async (e) => {
-    try {
-      await processBudgetUpdate();
-      setIsDialogOpen(false);
-    } catch {
-      setIsDialogOpen(true);
-    }
+  const handleCloseDialog = (e) => {
+    e.preventDefault();
+    reset();
+    setIsDialogOpen(false);
   };
 
   const fields = [
     {
       label: "Amount ($)",
       registerName: "amount",
+      type: "text",
+      registerOptions: {
+        pattern: {
+          value: /^(0\.\d{2,}|[1-9]\d*(\.\d+)?|0\.\d+)$/,
+          message: "amount must be a demical number above 0.01",
+        },
+      },
     },
     {
       label: "Category",
+      type: "text",
       registerName: "category",
+      registerOptions: {
+        required: "required",
+      },
     },
     {
       label: "Label",
+      type: "text",
       registerName: "label",
     },
   ];
+
+  useEffect(() => {
+    setAddMessage(successAddMessage);
+  }, [isSuccess]);
+
+  useEffect(() => {
+    setAddMessage(failedAddMessage);
+  }, [isError]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAddMessage("");
+    }, 5000);
+  }, [isError, isSuccess]);
 
   return (
     <Dialog open={isDialogOpen}>
@@ -92,28 +111,59 @@ export default function AddPurchaseButton({}) {
           <TbReportMoney className="text-[80px]" />
         </button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogTitle>Add Purchase</DialogTitle>
-        <div className="py-6 space-y-6">
-          {fields.map((item) => (
-            <div className="space-y-3" key={item.label}>
-              <label>{item.label}</label>
-              <Input onKeyDown={handleOnEnter} />
+      <DialogContent
+        className={`transition-all duration-300 ease ${addMessage ? "h-[540px]" : "h-[430px]"}`}
+      >
+        <form onSubmit={handleSubmit(handleAddPurchase)}>
+          <DialogTitle>Add Purchase</DialogTitle>
+          <div className=" space-y-6">
+            <div
+              className={`w-[462px] absolute duration-300 ease-in-out ${addMessage ? "opacity-100" : "opacity-0"}`}
+            >
+              {addMessage === successAddMessage ? (
+                <ActionStatus
+                  variant={"success"}
+                  description={successAddMessage}
+                />
+              ) : (
+                <ActionStatus
+                  variant={"destructive"}
+                  description={failedAddMessage}
+                />
+              )}
             </div>
-          ))}
-        </div>
 
-        <div className="flex justify-between items-center">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setIsDialogOpen(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Button onClick={(e) => handleUpdateClick(e)}>Add</Button>
-        </div>
+            {fields.map((item) => (
+              <div
+                className={`space-y-3  duration-300 ease-in-out  ${addMessage && tranformY}`}
+                key={item.label}
+              >
+                <label>
+                  {item.label}
+                  {
+                    <span className="text-destructive text-xs ml-4">
+                      {errors[item.registerName]?.message}
+                    </span>
+                  }
+                </label>
+                <Input
+                  onKeyDown={handleOnEnter}
+                  type={item.type}
+                  {...register(item.registerName, item.registerOptions)}
+                  className={errors[item.registerName] && "border-destructive"}
+                />
+              </div>
+            ))}
+            <div
+              className={`flex justify-between items-center duration-300 ease-in-out  ${addMessage && tranformY}`}
+            >
+              <Button variant="outline" onClick={handleCloseDialog}>
+                Close
+              </Button>
+              <Button type="submit">Add</Button>
+            </div>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
