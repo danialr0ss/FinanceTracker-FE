@@ -20,9 +20,8 @@ export default function AddPurchaseButton() {
   const tranformY = "translate-y-24";
 
   const [addMessage, setAddMessage] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(null);
-
-  const [addPurchase, { isError, isSuccess }] = useAddPurchaseMutation();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [addPurchase] = useAddPurchaseMutation();
 
   const defaultValues = {
     defaultValues: { amount: 0, category: "", label: "" },
@@ -40,13 +39,13 @@ export default function AddPurchaseButton() {
       data.amount = Number(data.amount);
       console.log({ body: data });
       await addPurchase(data).unwrap();
+      setAddMessage(successAddMessage);
     } catch (err) {
-      console.log(err);
+      setAddMessage(failedAddMessage);
     }
   };
 
   const handleOnEnter = (e) => {
-    console.log("in enter", e.key);
     if (e.key === "Enter") {
       console.log("entering");
       handleSubmit(handleAddPurchase);
@@ -87,18 +86,10 @@ export default function AddPurchaseButton() {
   ];
 
   useEffect(() => {
-    setAddMessage(successAddMessage);
-  }, [isSuccess]);
-
-  useEffect(() => {
-    setAddMessage(failedAddMessage);
-  }, [isError]);
-
-  useEffect(() => {
     setTimeout(() => {
       setAddMessage("");
     }, 5000);
-  }, [isError, isSuccess]);
+  }, [addMessage]);
 
   return (
     <Dialog open={isDialogOpen}>
@@ -112,7 +103,7 @@ export default function AddPurchaseButton() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className={`transition-all duration-300 ease ${addMessage ? "h-[540px]" : "h-[430px]"}`}
+        className={`transition-all duration-300 ease-in-out ${addMessage ? "h-[540px]" : "h-[430px]"}`}
       >
         <form onSubmit={handleSubmit(handleAddPurchase)}>
           <DialogTitle>Add Purchase</DialogTitle>
