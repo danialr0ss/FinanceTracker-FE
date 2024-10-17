@@ -1,8 +1,8 @@
 import ShortcutButton from "@/components/ShortcutButton";
 import { BiCategory } from "react-icons/bi";
 import { FaRegCalendarCheck } from "react-icons/fa6";
-import { RiAccountCircleLine } from "react-icons/ri";
 import AddPurchaseButton from "@/components/AddPurchaseButton";
+import SettingsButton from "@/components/SettingsButton";
 
 export default function Home() {
   const username = "User";
@@ -28,11 +28,6 @@ export default function Home() {
       title: "Purchase History",
       icon: FaRegCalendarCheck,
       href: "/purchases-by-month",
-    },
-    {
-      title: "Account Settings",
-      icon: RiAccountCircleLine,
-      href: "",
     },
   ];
 
@@ -71,24 +66,15 @@ export default function Home() {
         <h1 className="text-3xl font-bold px-16">{`Good ${greet()}, ${username}`}</h1>
         <div className="flex flex-1 justify-evenly gap-16">
           <AddPurchaseButton />
-          {shortcuts.map((item, index) =>
-            item.dialog ? (
-              <item.dialog key={index}>
-                <ShortcutButton
-                  title={item.title}
-                  href={item.href}
-                  icon={item.icon}
-                />
-              </item.dialog>
-            ) : (
-              <ShortcutButton
-                key={index}
-                title={item.title}
-                href={item.href}
-                icon={item.icon}
-              />
-            )
-          )}
+          {shortcuts.map((item, index) => (
+            <ShortcutButton
+              key={index}
+              title={item.title}
+              href={item.href}
+              icon={item.icon}
+            />
+          ))}
+          <SettingsButton />
         </div>
         <div className="flex flex-1 justify-evenly">
           <div className="">

@@ -95,7 +95,7 @@ export default function AddPurchaseButton() {
     <Dialog open={isDialogOpen}>
       <DialogTrigger asChild>
         <button
-          className="w-56 h-56 p-4 rounded-xl border-2 border-gray-500 flex flex-col justify-evenly items-center hover:bg-gray-500 hover:text-white gap-4"
+          className="w-56 h-56 p-4 rounded-xl border-2 border-gray-500 flex flex-col justify-evenly items-center hover:bg-gray-500 hover:text-white gap-4 transition-colors duration-150 ease-in-out"
           onClick={() => setIsDialogOpen(true)}
         >
           <div className="text-center text-lg font-bold">Add Purchase</div>
