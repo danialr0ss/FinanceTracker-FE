@@ -3,31 +3,20 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLoginMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { useRouter } from "next/navigation";
+import PasswordInput from "@/components/passwordInput";
+
 export default function Page() {
   const router = useRouter();
-  const [isShowingPassword, setIsShowingPassword] = useState(false);
   const imageSrc = "/loginImage.gif";
   const { register, handleSubmit } = useForm();
   const [isLoading, setIsLoading] = useState(true);
   const [login] = useLoginMutation();
   const [loginErrorMessage, setLoginErrorMessage] = useState("");
-
-  const showPassword = (e) => {
-    e.preventDefault();
-    setIsShowingPassword(true);
-  };
-
-  const hidePassword = (e) => {
-    e.preventDefault();
-    setIsShowingPassword(false);
-  };
 
   const submitForm = async (data) => {
     try {
@@ -105,27 +94,10 @@ export default function Page() {
                   placeholder="Username"
                 />
               </div>
-              <div className={`space-y-2`}>
-                <label className="mr-4">Password</label>
-                <div className="flex h-full relative ">
-                  <Input
-                    type={isShowingPassword ? "text" : "password"}
-                    {...register("password", { required: true })}
-                    placeholder="Password"
-                  />
-                  <button
-                    className="absolute right-4 top-2.5"
-                    onMouseDown={showPassword}
-                    onMouseUp={hidePassword}
-                  >
-                    {isShowingPassword ? (
-                      <FaRegEyeSlash className="text-xl" />
-                    ) : (
-                      <FaRegEye className="text-xl" />
-                    )}
-                  </button>
-                </div>
-              </div>
+              <PasswordInput
+                label={"Password"}
+                register={register("password", { required: true })}
+              />
               <Button type="submit">Log In</Button>
               <span>
                 Don't have an account?{" "}

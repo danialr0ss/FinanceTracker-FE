@@ -8,11 +8,10 @@ import { Button } from "@/components/ui/button";
 import { useRegisterUserMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { Skeleton } from "@/components/ui/skeleton";
+import PasswordInput from "@/components/passwordInput";
 
 export default function Page() {
-  const [isShowingPassword, setIsShowingPassword] = useState(false);
-  const [isShowingRetyped, setIsShowingRetyped] = useState(false);
-  const [isMatchingPassword, setIsMatchingPassword] = useState(true);
+  const [passwordMismatchMessage, setPasswordMismatchMessage] = useState("");
   const [registerUser] = useRegisterUserMutation();
   const matchingErrorMessage = "passwords do not match";
   const [registerErrorMessage, setRegisterErrorMessage] = useState("");
@@ -27,19 +26,14 @@ export default function Page() {
     reset,
   } = useForm();
 
-  const changeState = (e, setter, state) => {
-    e.preventDefault();
-    setter(state);
-  };
-
   const submitForm = async (data) => {
     if (data.password !== data.retyped) {
-      setIsMatchingPassword(false);
+      setPasswordMismatchMessage("passwords do not match");
       return;
     }
 
     //hide error message if they were shown before
-    setIsMatchingPassword(true);
+    setPasswordMismatchMessage("");
 
     try {
       //format data so api can accept
@@ -129,81 +123,24 @@ export default function Page() {
                   className={errors.username && "border-error"}
                   {...register("username", { required: "required" })}
                   placeholder="Username"
-                  errors={errors?.username}
+                  errors={errors.username}
                 />
               </div>
-              <div className="space-y-2">
-                <div>
-                  <label className="mr-4">Password</label>
-                  <label className="text-error text-xs">
-                    {errors.password?.message}
-                    {!isMatchingPassword && matchingErrorMessage}
-                  </label>
-                </div>
-                <div className="flex h-full relative">
-                  <Input
-                    className={
-                      (errors.password || !isMatchingPassword) && "border-error"
-                    }
-                    type={isShowingPassword ? "text" : "password"}
-                    {...register("password", { required: "required" })}
-                    placeholder="Password"
-                    errors={errors.password}
-                  />
-                  <button
-                    className="absolute right-4 top-2.5"
-                    onMouseDown={(e) =>
-                      changeState(e, setIsShowingPassword, true)
-                    }
-                    tabIndex="-1"
-                    onMouseUp={(e) =>
-                      changeState(e, setIsShowingPassword, false)
-                    }
-                  >
-                    {isShowingPassword ? (
-                      <FaRegEyeSlash className="text-xl" />
-                    ) : (
-                      <FaRegEye className="text-xl" />
-                    )}
-                  </button>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div>
-                  <label className="mr-4">Re-type Password</label>
-                  <label className="text-error text-xs">
-                    {errors.retyped?.message}
-                    {!isMatchingPassword && matchingErrorMessage}
-                  </label>
-                </div>
-                <div className="flex h-full relative">
-                  <Input
-                    className={
-                      (errors.retyped || !isMatchingPassword) && "border-error"
-                    }
-                    type={isShowingRetyped ? "text" : "password"}
-                    {...register("retyped", { required: "required" })}
-                    placeholder="Password"
-                    errors={errors?.retyped}
-                  />
-                  <button
-                    className="absolute right-4 top-2.5"
-                    tabIndex="-1"
-                    onMouseDown={(e) =>
-                      changeState(e, setIsShowingRetyped, true)
-                    }
-                    onMouseUp={(e) =>
-                      changeState(e, setIsShowingRetyped, false)
-                    }
-                  >
-                    {isShowingRetyped ? (
-                      <FaRegEyeSlash className="text-xl" />
-                    ) : (
-                      <FaRegEye className="text-xl" />
-                    )}
-                  </button>
-                </div>
-              </div>
+              <PasswordInput
+                label="New Password"
+                register={register("password", { required: "required" })}
+                errorMessage={
+                  errors.password?.message || passwordMismatchMessage
+                }
+              />
+              <PasswordInput
+                label="Retyped Password"
+                register={register("retyped", { required: "required" })}
+                errorMessage={
+                  errors.retyped?.message || passwordMismatchMessage
+                }
+              />
+              <div className="text-destructive text-xs"></div>
               <Button type="submit">Create account</Button>
               <span>
                 Already have an account?{" "}

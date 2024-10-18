@@ -15,31 +15,52 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "./ui/accordion";
-import { Input } from "./ui/input";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import PasswordInput from "./passwordInput";
+import { ActionStatus } from "./ActionStatus";
+import { useChangePasswordMutation } from "@/store/slices/api/authApi";
+import { useEffect } from "react";
 
 export default function SettingsButton() {
+  const [changePasswordMessage, setChangePasswordMesssage] = useState("");
+  const successPasswordChangeMessage = "Password successfully changed";
+  const failedPasswordChangeMessage = "Password change failed";
   const [passwordMismatchMessage, setPasswordMismatchMessage] = useState("");
+  const [changePassword] = useChangePasswordMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const handleChangePassword = (data) => {
+  const handleChangePassword = async (data) => {
     const newPassword = data.newPassword;
-    const retypePassword = data.retypePassword;
+    const retypedPassword = data.retypedPassword;
 
-    if (newPassword !== retypePassword) {
+    if (newPassword !== retypedPassword) {
       setPasswordMismatchMessage("new passwords do not match");
       return;
     } else {
       setPasswordMismatchMessage("");
       delete data.retypePassword;
     }
-    console.log(data);
+
+    const body = { password: data.oldPassword, newPassword: data.newPassword };
+
+    try {
+      await changePassword(body).unwrap();
+      setChangePasswordMesssage(successPasswordChangeMessage);
+    } catch (err) {
+      setChangePasswordMesssage(failedPasswordChangeMessage);
+    }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setChangePasswordMesssage("");
+    }, 5000);
+  }, [changePasswordMessage]);
 
   return (
     <div>
@@ -64,48 +85,57 @@ export default function SettingsButton() {
             <AccordionItem value="item-1">
               <AccordionTrigger>Change Password</AccordionTrigger>
               <form onSubmit={handleSubmit(handleChangePassword)}>
-                <AccordionContent className="space-y-4 my-2 w-full ">
-                  <div className="space-y-2 m-1">
-                    <label>Old Password</label>
-                    <label className="text-destructive text-xs ml-4">
-                      {errors["oldPassword"]?.message}
-                    </label>
-                    <Input
-                      {...register("oldPassword", { required: "required" })}
-                      type="password"
-                    />
+                <AccordionContent
+                  className={`relative space-y-4 my-2 w-full transition-all duration-150 ease-in-out ${changePasswordMessage ? "h-[450px]" : "h-[370px]"}`}
+                >
+                  <div
+                    className={`absolute top-0 left-0 w-full transition-opacity duration-300 ease-in-out ${changePasswordMessage ? "opacity-100" : "opacity-0"}`}
+                  >
+                    {changePasswordMessage === successPasswordChangeMessage && (
+                      <ActionStatus
+                        description={successPasswordChangeMessage}
+                        variant={"success"}
+                      />
+                    )}
+                    {changePasswordMessage === failedPasswordChangeMessage && (
+                      <ActionStatus
+                        description={failedPasswordChangeMessage}
+                        variant={"destructive"}
+                      />
+                    )}
                   </div>
-                  <div className="space-y-2 m-1">
-                    <label>New Password</label>
-                    <label className="text-destructive text-xs ml-4">
-                      {errors["newPassword"]?.message}
-                      {passwordMismatchMessage}
-                    </label>
-                    <span className="text-xs text-destructive"></span>
-                    <Input
-                      {...register("newPassword", { required: "required" })}
-                      type="password"
-                    />
+                  <div
+                    className={`space-y-8 transition-transform duration-150 ease-in-out ${changePasswordMessage ? "translate-y-24" : "translate-y-0"}`}
+                  >
+                    <div className="m-1 space-y-8">
+                      <PasswordInput
+                        label="Old Password"
+                        register={register("oldPassword", { required: true })}
+                      />
+                      <PasswordInput
+                        label="New Password"
+                        register={register("newPassword", { required: true })}
+                        errorMessage={passwordMismatchMessage}
+                      />
+                      <PasswordInput
+                        label="Retyped Password"
+                        errorMessage={passwordMismatchMessage}
+                        register={register("retypedPassword", {
+                          required: true,
+                        })}
+                      />
+                    </div>
+
+                    <Button variant={"outline"} type="submit" className="m-1">
+                      Change
+                    </Button>
                   </div>
-                  <div className="space-y-2 m-1">
-                    <label>Retype New Password</label>
-                    <label className="text-destructive text-xs ml-4">
-                      {errors["retypePassword"]?.message}
-                    </label>
-                    <Input
-                      {...register("retypePassword", { required: "required" })}
-                      type="password"
-                    />
-                  </div>
-                  <Button variant={"outline"} type="submit">
-                    Change
-                  </Button>
                 </AccordionContent>
               </form>
             </AccordionItem>
           </Accordion>
           <DialogFooter>
-            <DialogClose>
+            <DialogClose asChild>
               <Button variant={"outline"}>Close</Button>
             </DialogClose>
           </DialogFooter>
