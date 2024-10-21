@@ -1,13 +1,12 @@
-"use client";
 import { configureStore } from "@reduxjs/toolkit";
-import historySlice from "./slices/historySlice";
 import authApi from "./slices/api/authApi";
 import accountApi from "./slices/api/accountApi";
 import purchaseApi from "./slices/api/purchaseApi";
+import purchasesSlice from "./slices/purchasesSlice";
 
 const store = configureStore({
   reducer: {
-    history: historySlice.reducer,
+    purchases: purchasesSlice.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [accountApi.reducerPath]: accountApi.reducer,
     [purchaseApi.reducerPath]: purchaseApi.reducer,

@@ -6,10 +6,12 @@ import AddPurchaseButton from "@/components/AddPurchaseButton";
 import SettingsButton from "@/components/SettingsButton";
 import { useEffect, useState } from "react";
 import SkeletonLoading from "@/components/SkeletonLoading";
+import { useSelector } from "react-redux";
 
 export default function Home() {
   const [username, setUsername] = useState("");
   const [isLoadingUsername, setIsLoadingUsername] = useState(true);
+  const purchases = useSelector((state) => state.purchases.purchases);
 
   function greet() {
     const date = new Date();
@@ -35,34 +37,43 @@ export default function Home() {
     },
   ];
 
-  const recentPurchases = [
-    {
-      amount: "$11020.00",
-      date: "15-06-24",
-      category: "Entertainment and Leisure",
-    },
-    {
-      amount: "$21.23",
-      date: "16-03-23",
-      category: "Travel",
-    },
-    {
-      amount: "$56.65",
-      date: "14-12-24",
-      category: "Food",
-    },
-    {
-      amount: "$514.65",
-      date: "14-06-24",
-      category: "Food",
-    },
-  ];
+  function getMonthlySpending() {
+    return purchases.reduce((acc, item) => acc + item.amount, 0);
+  }
 
-  const summary = {
-    mostExpensivePurchase: "$321.23",
-    remainingBudget: "$2321.12",
-    mostExpensiveCategory: "Entertainment and Leisure",
-  };
+  function getMostExpensivePurchase() {
+    let mostExpensiveItem = purchases[0];
+    for (const item of purchases) {
+      if (item.amount > mostExpensiveItem.amount) {
+        mostExpensiveItem = item;
+      }
+    }
+    return mostExpensiveItem.amount;
+  }
+
+  function getMostExpensiveCategory() {
+    const categoryAndPrices = new Map();
+    let mostExpensiveCategory = { category: "", amount: 0 };
+
+    for (const item of purchases) {
+      if (!categoryAndPrices.has(item.category)) {
+        categoryAndPrices.set(item.category, item.amount);
+      } else {
+        const oldTotalValue = categoryAndPrices.get(item.category);
+        categoryAndPrices.set(item.category, item.amount + oldTotalValue);
+      }
+
+      if (categoryAndPrices.get(item.category) > mostExpensiveCategory.amount) {
+        mostExpensiveCategory = {
+          category: item.category,
+          amount: categoryAndPrices.get(item.category),
+        };
+      }
+    }
+
+    return mostExpensiveCategory.category;
+  }
+  getMostExpensiveCategory();
 
   useEffect(() => {
     const cookie = document.cookie;
@@ -104,16 +115,18 @@ export default function Home() {
         <div className="flex flex-1 justify-evenly">
           <div className="">
             <h2 className="text-2xl pb-8 font-bold">Recent Purchases</h2>
-            <div className="border-2 rounded-xl p-8 w-[750px] h-[300px] overflow-scroll">
+            <div className="border-2 rounded-xl px-8 py-4 w-[750px] h-[300px] overflow-scroll">
               <div className="text-xl font-bold m-4">
-                <span className="w-48 inline-block">Date</span>
-                <span className="w-40 inline-block">Amount</span>
+                <span className="w-52 inline-block">Date</span>
+                <span className="w-44 inline-block">Amount</span>
                 <span>Category</span>
               </div>
-              {recentPurchases.map((item, index) => (
-                <div className="text-xl m-4" key={index}>
-                  <span className="w-48 inline-block">{item.amount}</span>
-                  <span className="w-40 inline-block">{item.date}</span>
+              {purchases.slice(0, 5).map((item, index) => (
+                <div className="text-xl m-4 my-8" key={index}>
+                  <span className="w-52 inline-block">{item.date}</span>
+                  <span className="w-44 inline-block">
+                    ${item.amount.toFixed(2)}
+                  </span>
                   <span className="w-72 truncate">{item.category}</span>
                 </div>
               ))}
@@ -121,20 +134,20 @@ export default function Home() {
           </div>
           <div>
             <h2 className="text-2xl pb-8 font-bold">Summary</h2>
-            <div className="border-2 rounded-xl p-8 w-[750px] h-[300px] ">
+            <div className="border-2 rounded-xl px-8 py-4 w-[750px] h-[300px] ">
               <div className="text-xl">
                 <div className="p-4 flex justify-between">
                   <p className="font-bold">Total Monthly Spending : </p>
-                  <p>{summary.remainingBudget}</p>
+                  <p>${getMonthlySpending().toFixed(2)}</p>
                 </div>
                 <div className="p-4 flex justify-between">
                   <p className="font-bold">Most Expensive Purchase : </p>
-                  <p>{summary.mostExpensivePurchase}</p>
+                  <p>${getMostExpensivePurchase().toFixed(2)}</p>
                 </div>
                 <div className="p-4 flex justify-between">
                   <p className="font-bold">Most Spent On Category : </p>
                   <p className="w-80 truncate text-end">
-                    {summary.mostExpensiveCategory}
+                    {getMostExpensiveCategory()}
                   </p>
                 </div>
               </div>
