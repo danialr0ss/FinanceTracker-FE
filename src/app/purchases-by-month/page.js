@@ -8,6 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function Page() {
   const [selectedOption, setSelectedOption] = useState("");
@@ -18,18 +19,23 @@ export default function Page() {
     { month: 6, year: 2024 },
   ];
 
+  const purchases = useSelector((state) => state.purchases.purchases);
+  const now = new Date();
+  const month = `${now.getMonth()} ${now.getFullYear()}`;
+  const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
+
   const summary = [
     {
       header: "Month",
-      label: "February 2024",
+      label: month,
     },
     {
       header: "Days In Month",
-      label: "31",
+      label: daysInMonth,
     },
     {
       header: "Purchases Made",
-      label: "78",
+      label: pur,
     },
     {
       header: "Amount Spent",
@@ -45,50 +51,50 @@ export default function Page() {
     },
   ];
 
-  const purchases = [
-    {
-      amount: "$150.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Dinner with Friends",
-      type: "Expense",
-    },
-    {
-      amount: "$75.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Grocery Shopping",
-      type: "Expense",
-    },
-    {
-      amount: "$200.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Salary",
-      type: "Income",
-    },
-    {
-      amount: "$50.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Bowling Night",
-      type: "Expense",
-    },
-    {
-      amount: "$120.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Freelance Project",
-      type: "Income",
-    },
-    {
-      amount: "$230.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Project",
-      type: "Side Income",
-    },
-    {
-      amount: "$40.00",
-      datetime: parseSQLDate(new Date()),
-      label: "Transport",
-      type: "Work",
-    },
-  ];
+  // const purchases = [
+  //   {
+  //     amount: "$150.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Dinner with Friends",
+  //     type: "Expense",
+  //   },
+  //   {
+  //     amount: "$75.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Grocery Shopping",
+  //     type: "Expense",
+  //   },
+  //   {
+  //     amount: "$200.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Salary",
+  //     type: "Income",
+  //   },
+  //   {
+  //     amount: "$50.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Bowling Night",
+  //     type: "Expense",
+  //   },
+  //   {
+  //     amount: "$120.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Freelance Project",
+  //     type: "Income",
+  //   },
+  //   {
+  //     amount: "$230.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Project",
+  //     type: "Side Income",
+  //   },
+  //   {
+  //     amount: "$40.00",
+  //     datetime: parseSQLDate(new Date()),
+  //     label: "Transport",
+  //     type: "Work",
+  //   },
+  // ];
 
   function monthToString(month) {
     if (month === 1) {

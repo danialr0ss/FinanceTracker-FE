@@ -47,7 +47,6 @@ export default function AddPurchaseButton() {
 
   const handleOnEnter = (e) => {
     if (e.key === "Enter") {
-      console.log("entering");
       handleSubmit(handleAddPurchase);
     }
   };

@@ -6,16 +6,24 @@ import AddPurchaseButton from "@/components/AddPurchaseButton";
 import SettingsButton from "@/components/SettingsButton";
 import { useEffect, useState } from "react";
 import SkeletonLoading from "@/components/SkeletonLoading";
-import { useSelector } from "react-redux";
+import { useGetPurchaseByMonthQuery } from "@/store/slices/api/purchaseApi";
 
 export default function Home() {
+  const now = new Date();
+  const {
+    data,
+    error,
+    isLoading: isLoadingPurchases,
+  } = useGetPurchaseByMonthQuery({
+    month: now.getMonth(),
+    year: now.getFullYear(),
+  });
+  const purchases = data?.purchases || [];
+  const totalMonthlyAmount = parseFloat(data?.total) | 0;
   const [username, setUsername] = useState("");
-  const [isLoadingUsername, setIsLoadingUsername] = useState(true);
-  const purchases = useSelector((state) => state.purchases.purchases);
 
   function greet() {
-    const date = new Date();
-    const time = date.getHours();
+    const time = now.getHours();
     if (time < 12) {
       return "Morning";
     } else if (time < 17) {
@@ -37,44 +45,40 @@ export default function Home() {
     },
   ];
 
-  function getMonthlySpending() {
-    return purchases.reduce((acc, item) => acc + item.amount, 0);
-  }
-
   function getMostExpensivePurchase() {
     let mostExpensiveItem = purchases[0];
     for (const item of purchases) {
-      if (item.amount > mostExpensiveItem.amount) {
+      if (item?.amount > mostExpensiveItem?.amount) {
         mostExpensiveItem = item;
       }
     }
-    return mostExpensiveItem.amount;
+    return mostExpensiveItem ? mostExpensiveItem?.amount.toFixed(2) : "0.00";
   }
 
   function getMostExpensiveCategory() {
     const categoryAndPrices = new Map();
-    let mostExpensiveCategory = { category: "", amount: 0 };
+    let mostExpensiveCategory = { category: "N/A", amount: 0 };
 
     for (const item of purchases) {
-      if (!categoryAndPrices.has(item.category)) {
-        categoryAndPrices.set(item.category, item.amount);
+      if (!categoryAndPrices.has(item?.category)) {
+        categoryAndPrices.set(item?.category, item?.amount);
       } else {
-        const oldTotalValue = categoryAndPrices.get(item.category);
-        categoryAndPrices.set(item.category, item.amount + oldTotalValue);
+        const oldTotalValue = categoryAndPrices.get(item?.category);
+        categoryAndPrices.set(item?.category, item?.amount + oldTotalValue);
       }
 
-      if (categoryAndPrices.get(item.category) > mostExpensiveCategory.amount) {
+      if (
+        categoryAndPrices.get(item?.category) > mostExpensiveCategory.amount
+      ) {
         mostExpensiveCategory = {
-          category: item.category,
-          amount: categoryAndPrices.get(item.category),
+          category: item?.category,
+          amount: categoryAndPrices.get(item?.category),
         };
       }
     }
 
     return mostExpensiveCategory.category;
   }
-  getMostExpensiveCategory();
-
   useEffect(() => {
     const cookie = document.cookie;
     const usernameValueIndex = cookie.indexOf("username=") + 9;
@@ -87,27 +91,33 @@ export default function Home() {
     const username = usernameSubstring.substring(0, lastIndex);
 
     setUsername(username);
-    setIsLoadingUsername(false);
   }, []);
+
+  function formatDate(date) {
+    const dateObj = new Date(date);
+    return `${dateObj.getDate()}-${dateObj.getMonth()}-${dateObj.getFullYear()}`;
+  }
 
   return (
     <div className="w-full h-full p-16 bg-backgroundColor">
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
-        {isLoadingUsername ? (
-          <div className="w-[450px] h-full px-16">
-            <SkeletonLoading />
-          </div>
-        ) : (
-          <h1 className="text-3xl font-bold px-16">{`Good ${greet()}, ${username}`}</h1>
-        )}
+        <h1 className="text-3xl font-bold px-16 inline-flex">
+          {`Good ${greet()}, `}
+          {username || (
+            <div className={"w-[200px]"}>
+              <SkeletonLoading />
+            </div>
+          )}
+        </h1>
+
         <div className="flex flex-1 justify-evenly gap-16">
           <AddPurchaseButton />
           {shortcuts.map((item, index) => (
             <ShortcutButton
               key={index}
-              title={item.title}
-              href={item.href}
-              icon={item.icon}
+              title={item?.title}
+              href={item?.href}
+              icon={item?.icon}
             />
           ))}
           <SettingsButton />
@@ -121,15 +131,39 @@ export default function Home() {
                 <span className="w-44 inline-block">Amount</span>
                 <span>Category</span>
               </div>
-              {purchases.slice(0, 5).map((item, index) => (
-                <div className="text-xl m-4 my-8" key={index}>
-                  <span className="w-52 inline-block">{item.date}</span>
-                  <span className="w-44 inline-block">
-                    ${item.amount.toFixed(2)}
-                  </span>
-                  <span className="w-72 truncate">{item.category}</span>
+              {isLoadingPurchases ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="mx-4 my-8 flex flex-row">
+                    <div className="w-[150px] h-[25px] mr-14">
+                      <SkeletonLoading />
+                    </div>
+                    <div className="w-[120px] h-[25px] mr-14">
+                      <SkeletonLoading />
+                    </div>
+                    <div className="w-[180px] h-[25px] mr-14">
+                      <SkeletonLoading />
+                    </div>
+                  </div>
+                ))
+              ) : purchases.length !== 0 ? (
+                purchases.slice(0, 5).map((item, index) => (
+                  <div className="text-xl mx-4 my-8" key={index}>
+                    <span className="w-52 inline-block">
+                      {formatDate(item?.date)}
+                    </span>
+                    <span className="w-44 inline-block">
+                      ${item?.amount.toFixed(2)}
+                    </span>
+                    <span className="w-72 truncate">{item?.category}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-xl mx-4 my-8">
+                  <span className="w-52 inline-block">N/A</span>
+                  <span className="w-44 inline-block">N/A</span>
+                  <span className="w-72 truncate">N/A</span>
                 </div>
-              ))}
+              )}
             </div>
           </div>
           <div>
@@ -138,17 +172,35 @@ export default function Home() {
               <div className="text-xl">
                 <div className="p-4 flex justify-between">
                   <p className="font-bold">Total Monthly Spending : </p>
-                  <p>${getMonthlySpending().toFixed(2)}</p>
+                  {isLoadingPurchases ? (
+                    <div className="w-[250px] h-[25px]">
+                      <SkeletonLoading />
+                    </div>
+                  ) : (
+                    <p>${totalMonthlyAmount.toFixed(2)}</p>
+                  )}
                 </div>
                 <div className="p-4 flex justify-between">
                   <p className="font-bold">Most Expensive Purchase : </p>
-                  <p>${getMostExpensivePurchase().toFixed(2)}</p>
+                  {isLoadingPurchases ? (
+                    <div className="w-[250px] h-[25px] ">
+                      <SkeletonLoading />
+                    </div>
+                  ) : (
+                    <p>${getMostExpensivePurchase()}</p>
+                  )}
                 </div>
                 <div className="p-4 flex justify-between">
                   <p className="font-bold">Most Spent On Category : </p>
-                  <p className="w-80 truncate text-end">
-                    {getMostExpensiveCategory()}
-                  </p>
+                  {isLoadingPurchases ? (
+                    <div className="w-[250px] h-[25px]">
+                      <SkeletonLoading />
+                    </div>
+                  ) : (
+                    <p className="w-80 truncate text-end">
+                      {getMostExpensiveCategory()}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

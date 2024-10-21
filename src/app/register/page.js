@@ -13,7 +13,6 @@ import PasswordInput from "@/components/passwordInput";
 export default function Page() {
   const [passwordMismatchMessage, setPasswordMismatchMessage] = useState("");
   const [registerUser] = useRegisterUserMutation();
-  const matchingErrorMessage = "passwords do not match";
   const [registerErrorMessage, setRegisterErrorMessage] = useState("");
   const [registerSuccessMessage, setRegisterSuccessMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
