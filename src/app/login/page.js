@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
@@ -22,6 +21,7 @@ export default function Page() {
     try {
       await login(data).unwrap();
       router.push("/dashboard");
+      document.cookie = `username=${data.name};`;
     } catch (err) {
       setLoginErrorMessage(err.data.message);
     }

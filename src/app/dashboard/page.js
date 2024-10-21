@@ -1,11 +1,15 @@
+"use client";
 import ShortcutButton from "@/components/ShortcutButton";
 import { BiCategory } from "react-icons/bi";
 import { FaRegCalendarCheck } from "react-icons/fa6";
 import AddPurchaseButton from "@/components/AddPurchaseButton";
 import SettingsButton from "@/components/SettingsButton";
+import { useEffect, useState } from "react";
+import SkeletonLoading from "@/components/SkeletonLoading";
 
 export default function Home() {
-  const username = "User";
+  const [username, setUsername] = useState("");
+  const [isLoadingUsername, setIsLoadingUsername] = useState(true);
 
   function greet() {
     const date = new Date();
@@ -60,10 +64,31 @@ export default function Home() {
     mostExpensiveCategory: "Entertainment and Leisure",
   };
 
+  useEffect(() => {
+    const cookie = document.cookie;
+    const usernameValueIndex = cookie.indexOf("username=") + 9;
+    // make a substring that starts with the value of username
+    const usernameSubstring = cookie.substring(usernameValueIndex);
+    const lastIndex =
+      usernameSubstring.indexOf(";") === -1
+        ? usernameSubstring.length
+        : usernameSubstring.indexOf(";");
+    const username = usernameSubstring.substring(0, lastIndex);
+
+    setUsername(username);
+    setIsLoadingUsername(false);
+  }, []);
+
   return (
     <div className="w-full h-full p-16 bg-backgroundColor">
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
-        <h1 className="text-3xl font-bold px-16">{`Good ${greet()}, ${username}`}</h1>
+        {isLoadingUsername ? (
+          <div className="w-[450px] h-full px-16">
+            <SkeletonLoading />
+          </div>
+        ) : (
+          <h1 className="text-3xl font-bold px-16">{`Good ${greet()}, ${username}`}</h1>
+        )}
         <div className="flex flex-1 justify-evenly gap-16">
           <AddPurchaseButton />
           {shortcuts.map((item, index) => (
@@ -99,7 +124,7 @@ export default function Home() {
             <div className="border-2 rounded-xl p-8 w-[750px] h-[300px] ">
               <div className="text-xl">
                 <div className="p-4 flex justify-between">
-                  <p className="font-bold">Remaining Budget : </p>
+                  <p className="font-bold">Total Monthly Spending : </p>
                   <p>{summary.remainingBudget}</p>
                 </div>
                 <div className="p-4 flex justify-between">
