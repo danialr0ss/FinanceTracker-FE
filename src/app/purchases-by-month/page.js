@@ -8,7 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import {
+  getMostExpensiveCategory,
+  getMostExpensivePurchase,
+} from "@/lib/utils";
+import { useGetPurchaseByMonthQuery } from "@/store/slices/api/purchaseApi";
 
 export default function Page() {
   const [selectedOption, setSelectedOption] = useState("");
@@ -19,15 +23,18 @@ export default function Page() {
     { month: 6, year: 2024 },
   ];
 
-  const purchases = useSelector((state) => state.purchases.purchases);
   const now = new Date();
-  const month = `${now.getMonth()} ${now.getFullYear()}`;
+  const month = now.getMonth();
+  const year = now.getFullYear();
   const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
+  const { data } = useGetPurchaseByMonthQuery({ month: month, year: year });
+  const purchases = data ? data.purchases : [];
+  const totalAmountSpent = data ? data.total : 0;
 
   const summary = [
     {
       header: "Month",
-      label: month,
+      label: `${monthToString(month)} ${year}`,
     },
     {
       header: "Days In Month",
@@ -35,66 +42,21 @@ export default function Page() {
     },
     {
       header: "Purchases Made",
-      label: pur,
+      label: purchases.length,
     },
     {
       header: "Amount Spent",
-      label: "$2200.32",
+      label: `$${totalAmountSpent}`,
     },
     {
       header: "Most Expensive Purchase",
-      label: "$523.23",
+      label: `$${getMostExpensivePurchase(purchases)}`,
     },
     {
       header: "Most Spent Category",
-      label: "Entertainment",
+      label: getMostExpensiveCategory(purchases),
     },
   ];
-
-  // const purchases = [
-  //   {
-  //     amount: "$150.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Dinner with Friends",
-  //     type: "Expense",
-  //   },
-  //   {
-  //     amount: "$75.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Grocery Shopping",
-  //     type: "Expense",
-  //   },
-  //   {
-  //     amount: "$200.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Salary",
-  //     type: "Income",
-  //   },
-  //   {
-  //     amount: "$50.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Bowling Night",
-  //     type: "Expense",
-  //   },
-  //   {
-  //     amount: "$120.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Freelance Project",
-  //     type: "Income",
-  //   },
-  //   {
-  //     amount: "$230.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Project",
-  //     type: "Side Income",
-  //   },
-  //   {
-  //     amount: "$40.00",
-  //     datetime: parseSQLDate(new Date()),
-  //     label: "Transport",
-  //     type: "Work",
-  //   },
-  // ];
 
   function monthToString(month) {
     if (month === 1) {
@@ -124,11 +86,11 @@ export default function Page() {
     }
   }
 
-  function parseSQLDate() {
-    const datetime = new Date();
-    const year = datetime.getFullYear();
+  function parseDate(dateTime) {
+    const dateObj = new Date(dateTime);
+    const year = dateObj.getFullYear();
 
-    let date = datetime.getDate();
+    let date = dateObj.getDate();
 
     if (date === 1 || date === 21 || date === 31) {
       date = date + "st";
@@ -141,8 +103,8 @@ export default function Page() {
     }
 
     // getMonth is 0-based which required + 1 to be accurate
-    const month = monthToString(datetime.getMonth() + 1);
-    let hour = datetime.getHours();
+    const month = monthToString(dateObj.getMonth() + 1);
+    let hour = dateObj.getHours();
     let meridiem = " am";
     let time = "";
 
@@ -157,7 +119,7 @@ export default function Page() {
       time += `${hour}:`;
     }
 
-    const minutes = datetime.getMinutes();
+    const minutes = dateObj.getMinutes();
 
     if (minutes < 10) {
       time += `0${minutes}`;
@@ -212,26 +174,27 @@ export default function Page() {
               <span className="mr-32">Amount</span>
               <span className="mr-32">Time</span>
               <span className="mr-56">Date</span>
-              <span className="mr-72">Label</span>
-              <span>Type</span>
+              <span className="mr-64">Label</span>
+              <span>Category</span>
             </div>
             <div className="w-full border-t-2 border-black" />
             <div className="h-[400px] py-6 space-y-8 overflow-auto">
-              {purchases.map((item, index) => (
-                <div className="text-lg border-b-2" key={index}>
-                  <span className="w-[196px] inline-block">{item.amount}</span>
-                  <span className="w-[170px] inline-block">
-                    {item.datetime.time}
-                  </span>
-                  <span className="w-[268px] inline-block">
-                    {item.datetime.date}
-                  </span>
-                  <span className="w-[338px] h-fit inline-block  align-top truncate pr-4">
-                    {item.label}
-                  </span>
-                  <span>{item.type}</span>
-                </div>
-              ))}
+              {purchases.map((item, index) => {
+                const { date, time } = parseDate(item.date);
+                return (
+                  <div className="text-lg border-b-2" key={index}>
+                    <span className="w-[196px] inline-block">
+                      ${item.amount}
+                    </span>
+                    <span className="w-[170px] inline-block">{time}</span>
+                    <span className="w-[268px] inline-block">{date}</span>
+                    <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
+                      {item.label}
+                    </span>
+                    <span>{item.category}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

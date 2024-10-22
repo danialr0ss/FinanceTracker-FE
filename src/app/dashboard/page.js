@@ -8,14 +8,14 @@ import { useEffect, useState } from "react";
 import SkeletonLoading from "@/components/SkeletonLoading";
 import { useGetPurchaseByMonthQuery } from "@/store/slices/api/purchaseApi";
 import SignoutButton from "@/components/SignoutButton";
+import {
+  getMostExpensiveCategory,
+  getMostExpensivePurchase,
+} from "@/lib/utils";
 
 export default function Home() {
   const now = new Date();
-  const {
-    data,
-    error,
-    isLoading: isLoadingPurchases,
-  } = useGetPurchaseByMonthQuery({
+  const { data, isLoading: isLoadingPurchases } = useGetPurchaseByMonthQuery({
     month: now.getMonth(),
     year: now.getFullYear(),
   });
@@ -46,40 +46,6 @@ export default function Home() {
     },
   ];
 
-  function getMostExpensivePurchase() {
-    let mostExpensiveItem = purchases[0];
-    for (const item of purchases) {
-      if (item?.amount > mostExpensiveItem?.amount) {
-        mostExpensiveItem = item;
-      }
-    }
-    return mostExpensiveItem ? mostExpensiveItem?.amount.toFixed(2) : "0.00";
-  }
-
-  function getMostExpensiveCategory() {
-    const categoryAndPrices = new Map();
-    let mostExpensiveCategory = { category: "N/A", amount: 0 };
-
-    for (const item of purchases) {
-      if (!categoryAndPrices.has(item?.category)) {
-        categoryAndPrices.set(item?.category, item?.amount);
-      } else {
-        const oldTotalValue = categoryAndPrices.get(item?.category);
-        categoryAndPrices.set(item?.category, item?.amount + oldTotalValue);
-      }
-
-      if (
-        categoryAndPrices.get(item?.category) > mostExpensiveCategory.amount
-      ) {
-        mostExpensiveCategory = {
-          category: item?.category,
-          amount: categoryAndPrices.get(item?.category),
-        };
-      }
-    }
-
-    return mostExpensiveCategory.category;
-  }
   useEffect(() => {
     const cookie = document.cookie;
     const usernameValueIndex = cookie.indexOf("username=") + 9;
@@ -189,7 +155,7 @@ export default function Home() {
                       <SkeletonLoading />
                     </div>
                   ) : (
-                    <p>${getMostExpensivePurchase()}</p>
+                    <p>${getMostExpensivePurchase(purchases)}</p>
                   )}
                 </div>
                 <div className="p-4 flex justify-between">
@@ -200,7 +166,7 @@ export default function Home() {
                     </div>
                   ) : (
                     <p className="w-80 truncate text-end">
-                      {getMostExpensiveCategory()}
+                      {getMostExpensiveCategory(purchases)}
                     </p>
                   )}
                 </div>
