@@ -8,6 +8,7 @@ import { useLoginMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { useRouter } from "next/navigation";
 import PasswordInput from "@/components/passwordInput";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {
   const router = useRouter();
@@ -16,9 +17,11 @@ export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
   const [login] = useLoginMutation();
   const [loginErrorMessage, setLoginErrorMessage] = useState("");
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
 
   const submitForm = async (data) => {
     try {
+      setIsLoadingLogin(true);
       await login(data).unwrap();
       router.push("/dashboard");
       document.cookie = `username=${data.name};`;
@@ -47,7 +50,12 @@ export default function Page() {
   }, [loginErrorMessage]);
 
   return (
-    <div className="h-full w-full bg-backgroundColor p-16">
+    <div className="h-full w-full bg-backgroundColor p-16 relative">
+      {isLoadingLogin && (
+        <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
+          <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
+        </div>
+      )}
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
         <div
           className={`w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden`}
