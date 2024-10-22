@@ -8,12 +8,12 @@ import {
   IoIosCloseCircleOutline,
 } from "react-icons/io";
 import { useForm } from "react-hook-form";
-import { addPurchase } from "@/store/slices/historySlice";
+// import { addPurchase } from "@/store/slices/historySlice";
 
 export default function AddCard() {
-  const purchases = useSelector(
-    (state) => state.history.currentCategory.purchases
-  );
+  // const purchases = useSelector(
+  //   (state) => state.history.currentCategory.purchases
+  // );
   const [isAdding, setIsAdding] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const editRef = useRef(null);

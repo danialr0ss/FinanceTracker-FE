@@ -3,18 +3,18 @@ import { BiCategory } from "react-icons/bi";
 import { Button } from "@/components/ui/button";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef, useEffect } from "react";
-import { addCategory } from "@/store/slices/historySlice";
-import { setCurrentCategory } from "@/store/slices/historySlice";
+// import { addCategory } from "@/store/slices/historySlice";
+// import { setCurrentCategory } from "@/store/slices/historySlice";
 import ActiveButton from "./ActiveButton";
 import BackButton from "@/components/BackButton";
 
 export default function Sidebar() {
   const [isAdding, setIsAdding] = useState(false);
   const [newName, setNewName] = useState("");
-  const categories = useSelector((state) => state.history.categories);
-  const selectedCategory = useSelector(
-    (state) => state.history.currentCategory
-  );
+  // const categories = useSelector((state) => state.history.categories);
+  // const selectedCategory = useSelector(
+  //   (state) => state.history.currentCategory
+  // );
   const inputRef = useRef(null);
   const addButtonRef = useRef(null);
   const endOfScrollRef = useRef(null);
@@ -40,7 +40,7 @@ export default function Sidebar() {
       const formatName = newName[0].toUpperCase() + newName.substring(1);
       //if item exist select it and scroll to existing item
       if (!isItemExist(formatName)) {
-        dispatch(addCategory({ name: formatName.trim(), purchases: [] }));
+        // dispatch(addCategory({ name: formatName.trim(), purchases: [] }));
       }
       handleSelectCategory(formatName);
       setIsAdding(false);
@@ -48,9 +48,9 @@ export default function Sidebar() {
     }
   };
 
-  const handleSelectCategory = (itemName) => {
-    dispatch(setCurrentCategory(itemName));
-  };
+  // const handleSelectCategory = (itemName) => {
+  //   dispatch(setCurrentCategory(itemName));
+  // };
 
   const getActiveButton = (item) => {
     if (item.name === selectedCategory.name) {

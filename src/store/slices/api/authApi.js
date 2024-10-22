@@ -37,6 +37,15 @@ const authApi = createApi({
       },
       invalidatesTags: ["Auth"],
     }),
+    signout: build.mutation({
+      query: () => {
+        return {
+          url: "/signout",
+          method: "POST",
+        };
+      },
+      invalidatesTags: ["Auth"],
+    }),
   }),
 });
 
@@ -44,5 +53,6 @@ export const {
   useRegisterUserMutation,
   useLoginMutation,
   useChangePasswordMutation,
+  useSignoutMutation,
 } = authApi;
 export default authApi;

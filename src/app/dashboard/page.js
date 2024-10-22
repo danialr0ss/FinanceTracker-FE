@@ -7,6 +7,7 @@ import SettingsButton from "@/components/SettingsButton";
 import { useEffect, useState } from "react";
 import SkeletonLoading from "@/components/SkeletonLoading";
 import { useGetPurchaseByMonthQuery } from "@/store/slices/api/purchaseApi";
+import SignoutButton from "@/components/SignoutButton";
 
 export default function Home() {
   const now = new Date();
@@ -121,6 +122,7 @@ export default function Home() {
             />
           ))}
           <SettingsButton />
+          <SignoutButton />
         </div>
         <div className="flex flex-1 justify-evenly">
           <div className="">

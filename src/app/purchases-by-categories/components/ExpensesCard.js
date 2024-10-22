@@ -17,9 +17,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useDispatch } from "react-redux";
-import { deletePurchase } from "@/store/slices/historySlice";
+// import { deletePurchase } from "@/store/slices/historySlice";
 import { Input } from "@/components/ui/input";
-import { updatePurchase } from "@/store/slices/historySlice";
+// import { updatePurchase } from "@/store/slices/historySlice";
 
 export default function ExpensesCard({ id, price, label, date }) {
   const [isEditting, setIsEditting] = useState(false);
@@ -81,20 +81,20 @@ export default function ExpensesCard({ id, price, label, date }) {
     setIsEditting(false);
   };
 
-  const handleDeleteExpenses = (purchaseId) => {
-    dispatch(deletePurchase(purchaseId));
-  };
+  // const handleDeleteExpenses = (purchaseId) => {
+  //   dispatch(deletePurchase(purchaseId));
+  // };
 
-  const handleUpdatePurchase = (data) => {
-    const newPurchase = {
-      id: id,
-      label: data.label.trim(),
-      price: Number(data.price),
-      date: data.date,
-    };
-    dispatch(updatePurchase(newPurchase));
-    handleStopEditting();
-  };
+  // const handleUpdatePurchase = (data) => {
+  //   const newPurchase = {
+  //     id: id,
+  //     label: data.label.trim(),
+  //     price: Number(data.price),
+  //     date: data.date,
+  //   };
+  //   dispatch(updatePurchase(newPurchase));
+  //   handleStopEditting();
+  // };
 
   const handlePressEnter = (e) => {
     if (e.key === "Enter") {
