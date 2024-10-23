@@ -14,6 +14,7 @@ import {
 } from "@/lib/utils";
 import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import { Button } from "@/components/ui/button";
+import SkeletonLoading from "@/components/SkeletonLoading";
 
 export default function Page() {
   const earliestYear = 1950;
@@ -41,7 +42,7 @@ export default function Page() {
   ];
 
   const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
-  const { data: currentMonthlyPurchases } = useGetPurchasesQuery({
+  const { data: currentMonthlyPurchases, isLoading } = useGetPurchasesQuery({
     month: queryMonth,
     year: queryYear,
   });
@@ -56,7 +57,7 @@ export default function Page() {
   const summary = [
     {
       header: "Month",
-      label: `${monthToString(month)} ${year}`,
+      label: `${monthToString(queryMonth)} ${queryYear}`,
     },
     {
       header: "Days In Month",
@@ -215,7 +216,13 @@ export default function Page() {
             {summary.map((item) => (
               <div className="flex justify-between" key={item.header}>
                 <span className="font-bold">{`${item.header} :`}</span>
-                <span>{item.label}</span>
+                {isLoading ? (
+                  <div className="h-full w-24">
+                    <SkeletonLoading />
+                  </div>
+                ) : (
+                  <span>{item.label}</span>
+                )}
               </div>
             ))}
           </div>
@@ -229,22 +236,45 @@ export default function Page() {
             </div>
             <div className="w-full border-t-2 border-black" />
             <div className="h-[400px] py-6 space-y-8 overflow-auto">
-              {purchases.map((item, index) => {
-                const { date, time } = parseDate(item.date);
-                return (
-                  <div className="text-lg border-b-2" key={index}>
-                    <span className="w-[196px] inline-block">
-                      ${item.amount}
-                    </span>
-                    <span className="w-[170px] inline-block">{time}</span>
-                    <span className="w-[268px] inline-block">{date}</span>
-                    <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
-                      {item.label}
-                    </span>
-                    <span>{item.category}</span>
-                  </div>
-                );
-              })}
+              {isLoading
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <div
+                      className="flex flex-row text-lg border-b-2 items-center pb-2 "
+                      key={index}
+                    >
+                      <div className={"h-6 w-40 mr-8 "}>
+                        <SkeletonLoading />
+                      </div>
+                      <div className={"h-6 w-36 mr-8"}>
+                        <SkeletonLoading />
+                      </div>
+                      <div className={"h-6 w-60 mr-8"}>
+                        <SkeletonLoading />
+                      </div>
+                      <div className={"h-6 w-64 mr-8"}>
+                        <SkeletonLoading />
+                      </div>
+                      <div className={"h-6 w-48 mr-8"}>
+                        <SkeletonLoading />
+                      </div>
+                    </div>
+                  ))
+                : purchases.map((item, index) => {
+                    const { date, time } = parseDate(item.date);
+                    return (
+                      <div className="text-lg border-b-2" key={index}>
+                        <span className="w-[196px] inline-block">
+                          ${item.amount}
+                        </span>
+                        <span className="w-[170px] inline-block">{time}</span>
+                        <span className="w-[268px] inline-block">{date}</span>
+                        <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
+                          {item.label}
+                        </span>
+                        <span>{item.category}</span>
+                      </div>
+                    );
+                  })}
             </div>
           </div>
         </div>
