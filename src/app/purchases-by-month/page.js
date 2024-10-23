@@ -12,24 +12,46 @@ import {
   getMostExpensiveCategory,
   getMostExpensivePurchase,
 } from "@/lib/utils";
-import { useGetPurchaseByMonthQuery } from "@/store/slices/api/purchaseApi";
+import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const dates = [
-    { month: 8, year: 2024 },
-    { month: 7, year: 2024 },
-    { month: 6, year: 2024 },
-  ];
-
+  const earliestYear = 1950;
   const now = new Date();
   const month = now.getMonth();
   const year = now.getFullYear();
+  const [selectedMonth, setSelectedMonth] = useState(month);
+  const [selectedYear, setSelectedYear] = useState(year);
+  const [queryMonth, setQueryMonth] = useState(month);
+  const [queryYear, setQueryYear] = useState(year);
+
+  const months = [
+    { name: "January", number: 1 },
+    { name: "February", number: 2 },
+    { name: "March", number: 3 },
+    { name: "April", number: 4 },
+    { name: "May", number: 5 },
+    { name: "June", number: 6 },
+    { name: "July", number: 7 },
+    { name: "August", number: 8 },
+    { name: "September", number: 9 },
+    { name: "October", number: 10 },
+    { name: "November", number: 11 },
+    { name: "December", number: 12 },
+  ];
+
   const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
-  const { data } = useGetPurchaseByMonthQuery({ month: month, year: year });
-  const purchases = data ? data.purchases : [];
-  const totalAmountSpent = data ? data.total : 0;
+  const { data: currentMonthlyPurchases } = useGetPurchasesQuery({
+    month: queryMonth,
+    year: queryYear,
+  });
+  const years = Array.from({ length: now.getFullYear() - earliestYear + 1 });
+  const purchases = currentMonthlyPurchases
+    ? currentMonthlyPurchases.purchases
+    : [];
+  const totalAmountSpent = currentMonthlyPurchases
+    ? currentMonthlyPurchases.total
+    : 0;
 
   const summary = [
     {
@@ -46,7 +68,7 @@ export default function Page() {
     },
     {
       header: "Amount Spent",
-      label: `$${totalAmountSpent}`,
+      label: `$${totalAmountSpent.toFixed(2)}`,
     },
     {
       header: "Most Expensive Purchase",
@@ -57,6 +79,11 @@ export default function Page() {
       label: getMostExpensiveCategory(purchases),
     },
   ];
+
+  function handleQueryPurchases() {
+    setQueryMonth(selectedMonth);
+    setQueryYear(selectedYear);
+  }
 
   function monthToString(month) {
     if (month === 1) {
@@ -118,7 +145,6 @@ export default function Page() {
     } else {
       time += `${hour}:`;
     }
-
     const minutes = dateObj.getMinutes();
 
     if (minutes < 10) {
@@ -135,26 +161,50 @@ export default function Page() {
     <div className="w-full h-full bg-backgroundColor p-16 overflow-auto border">
       <div className="flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">
         <BackButton />
-        <div className="flex justify-center">
-          <div className="w-[540px] mr-10 text-3xl font-bold flex justify-center items-center ">
+        <div className="flex justify-start">
+          <div className="w-[400px] mr-8 text-3xl font-bold flex justify-center items-center ">
             Purchases
           </div>
-          <Select onValueChange={setSelectedOption}>
-            <SelectTrigger className="text-lg p-8 border-2">
-              <SelectValue placeholder="Select A Month" />
-            </SelectTrigger>
-            <SelectContent>
-              {dates.map((item) => (
-                <SelectItem
-                  value={`${item.month} ${item.year}}`}
-                  key={`${monthToString(item.month)} ${item.year}}`}
-                  className="text-lg"
-                >
-                  {`${monthToString(item.month)} ${item.year}`}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex flex-1 gap-8">
+            <Select onValueChange={setSelectedMonth} value={selectedMonth}>
+              <SelectTrigger className="text-lg p-8 border-2">
+                <SelectValue placeholder="Select A Month" />
+              </SelectTrigger>
+              <SelectContent>
+                {months.map((item) => (
+                  <SelectItem
+                    value={item.number}
+                    key={item.name}
+                    className="text-lg"
+                  >
+                    {`${item.name} (${item.number})`}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select onValueChange={setSelectedYear} value={selectedYear}>
+              <SelectTrigger className="text-lg p-8 border-2">
+                <SelectValue placeholder="Select A Year" />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map((_, index) => (
+                  <SelectItem
+                    value={year - index}
+                    key={year - index}
+                    className="text-lg"
+                  >
+                    {year - index}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              className="h-full w-32 text-md p-4"
+              onClick={handleQueryPurchases}
+            >
+              Search
+            </Button>
+          </div>
         </div>
         <div className="flex-1 flex gap-8 min-w-[500px]">
           <div className="w-[400px] flex flex-col rounded-xl border-2 border-borderColor p-8 space-y-8">

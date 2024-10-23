@@ -6,7 +6,7 @@ import AddPurchaseButton from "@/components/AddPurchaseButton";
 import SettingsButton from "@/components/SettingsButton";
 import { useEffect, useState } from "react";
 import SkeletonLoading from "@/components/SkeletonLoading";
-import { useGetPurchaseByMonthQuery } from "@/store/slices/api/purchaseApi";
+import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import SignoutButton from "@/components/SignoutButton";
 import {
   getMostExpensiveCategory,
@@ -15,14 +15,13 @@ import {
 
 export default function Home() {
   const now = new Date();
-  const { data, isLoading: isLoadingPurchases } = useGetPurchaseByMonthQuery({
+  const { data, isLoading: isLoadingPurchases } = useGetPurchasesQuery({
     month: now.getMonth(),
     year: now.getFullYear(),
   });
   const purchases = data?.purchases || [];
   const totalMonthlyAmount = parseFloat(data?.total) | 0;
   const [username, setUsername] = useState("");
-
   function greet() {
     const time = now.getHours();
     if (time < 12) {
@@ -62,7 +61,8 @@ export default function Home() {
 
   function formatDate(date) {
     const dateObj = new Date(date);
-    return `${dateObj.getDate()}-${dateObj.getMonth()}-${dateObj.getFullYear()}`;
+    //getMonth is 0 index, putting 0 is January
+    return `${dateObj.getDate()}-${dateObj.getMonth() + 1}-${dateObj.getFullYear()}`;
   }
 
   return (

@@ -17,8 +17,25 @@ const purchaseApi = createApi({
       },
       invalidatesTags: ["Purchase"],
     }),
-    getPurchaseByMonth: build.query({
-      query: ({ month, year }) => `/${month}/${year}`,
+    getPurchases: build.query({
+      query: ({ category, month, year }) => {
+        let query = "?";
+        if (category) {
+          query += "category=" + category + "&";
+        }
+        if (month) {
+          query += "month=" + month + "&";
+        }
+        if (year) {
+          query += "year=" + year;
+        }
+
+        if (query.length > 1) {
+          return query;
+        }
+
+        return "";
+      },
       transformResponse: (response) => {
         const transformedPurchases = response.purchases.map((purchase) => ({
           ...purchase,
@@ -35,6 +52,5 @@ const purchaseApi = createApi({
   }),
 });
 
-export const { useAddPurchaseMutation, useGetPurchaseByMonthQuery } =
-  purchaseApi;
+export const { useAddPurchaseMutation, useGetPurchasesQuery } = purchaseApi;
 export default purchaseApi;
