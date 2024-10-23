@@ -39,6 +39,7 @@ export default function AddPurchaseButton() {
       data.amount = Number(data.amount);
       console.log({ body: data });
       await addPurchase(data).unwrap();
+      reset();
       setAddMessage(successAddMessage);
     } catch (err) {
       setAddMessage(failedAddMessage);
@@ -108,7 +109,7 @@ export default function AddPurchaseButton() {
           <DialogTitle>Add Purchase</DialogTitle>
           <div className=" space-y-6">
             <div
-              className={`w-[462px] absolute duration-300 ease-in-out ${addMessage ? "opacity-100" : "opacity-0"}`}
+              className={`w-[462px] absolute duration-300 ease-in-out ${addMessage ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             >
               {addMessage === successAddMessage ? (
                 <ActionStatus

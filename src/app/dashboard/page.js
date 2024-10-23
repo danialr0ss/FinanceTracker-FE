@@ -15,9 +15,11 @@ import {
 
 export default function Home() {
   const now = new Date();
+  const month = now.getMonth() + 1; // month is 0 indexed
+  const year = now.getFullYear();
   const { data, isLoading: isLoadingPurchases } = useGetPurchasesQuery({
-    month: now.getMonth(),
-    year: now.getFullYear(),
+    month: month,
+    year: year,
   });
   const purchases = data?.purchases || [];
   const totalMonthlyAmount = parseFloat(data?.total) | 0;
