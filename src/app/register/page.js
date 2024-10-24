@@ -2,21 +2,21 @@
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import { FaRegEye } from "react-icons/fa6";
-import { FaRegEyeSlash } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import { useRegisterUserMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { Skeleton } from "@/components/ui/skeleton";
 import PasswordInput from "@/components/passwordInput";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {
   const [passwordMismatchMessage, setPasswordMismatchMessage] = useState("");
   const [registerUser] = useRegisterUserMutation();
   const [registerErrorMessage, setRegisterErrorMessage] = useState("");
   const [registerSuccessMessage, setRegisterSuccessMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingImage, setIsLoadingImage] = useState(true);
   const imageSrc = "/registerImage.jpeg";
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
 
   const {
     register,
@@ -58,11 +58,11 @@ export default function Page() {
     img.src = imageSrc;
 
     img.onload = () => {
-      setIsLoading(false);
+      setIsLoadingImage(false);
     };
 
     img.onerror = () => {
-      setIsLoading(false);
+      setIsLoadingImage(false);
     };
   }, [imageSrc]);
 
@@ -79,7 +79,12 @@ export default function Page() {
   }, [registerSuccessMessage]);
 
   return (
-    <div className="h-full w-full bg-backgroundColor p-16">
+    <div className="h-full w-full bg-backgroundColor p-16 relative">
+      {isLoadingPage && (
+        <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
+          <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
+        </div>
+      )}
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
         <div className="w-1/2 flex items-center pr-48 pl-32 relative">
           <form
@@ -143,7 +148,11 @@ export default function Page() {
               <Button type="submit">Create account</Button>
               <span>
                 Already have an account?{" "}
-                <a className="text-blue-600" href="/login">
+                <a
+                  className="text-blue-600"
+                  href="/login"
+                  onClick={() => setIsLoadingPage(true)}
+                >
                   Login
                 </a>
               </span>
@@ -151,8 +160,8 @@ export default function Page() {
           </form>
         </div>
         <div className="w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden">
-          {isLoading ? (
-            <Skeleton className={`h-full w-full rounded-xl`} />
+          {isLoadingImage ? (
+            <LoadingSpinner className="w-32 h-32 flex justify-center items-center " />
           ) : (
             <img
               className={`object-cover`}

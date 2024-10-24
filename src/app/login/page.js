@@ -14,14 +14,14 @@ export default function Page() {
   const router = useRouter();
   const imageSrc = "/loginImage.gif";
   const { register, handleSubmit } = useForm();
-  const [isLoading, setIsLoading] = useState(true);
+  const [IsLoadingImage, setIsLoadingImage] = useState(true);
   const [login] = useLoginMutation();
   const [loginErrorMessage, setLoginErrorMessage] = useState("");
-  const [isLoadingLogin, setIsLoadingLogin] = useState(false);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
 
   const submitForm = async (data) => {
     try {
-      setIsLoadingLogin(true);
+      setIsLoadingPage(true);
       await login(data).unwrap();
       router.push("/dashboard");
       document.cookie = `username=${data.name};`;
@@ -35,11 +35,11 @@ export default function Page() {
     img.src = imageSrc;
 
     img.onload = () => {
-      setIsLoading(false);
+      setIsLoadingImage(false);
     };
 
     img.onerror = () => {
-      setIsLoading(false);
+      setIsLoadingImage(false);
     };
   }, [imageSrc]);
 
@@ -51,7 +51,7 @@ export default function Page() {
 
   return (
     <div className="h-full w-full bg-backgroundColor p-16 relative">
-      {isLoadingLogin && (
+      {isLoadingPage && (
         <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
           <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
         </div>
@@ -60,13 +60,14 @@ export default function Page() {
         <div
           className={`w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden`}
         >
-          {isLoading ? (
-            <Skeleton className={`h-full w-full rounded-xl`} />
+          {IsLoadingImage ? (
+            <LoadingSpinner className="w-32 h-32 flex justify-center items-center " />
           ) : (
             <img
               className={`w-full h-full object-contain bg-imageBackground`}
               src={imageSrc}
               alt="Financial Illustration"
+              loading="lazy"
             />
           )}
         </div>
@@ -109,7 +110,11 @@ export default function Page() {
               <Button type="submit">Log In</Button>
               <span>
                 Don't have an account?{" "}
-                <a className="text-blue-600" href="/register">
+                <a
+                  className="text-blue-600"
+                  href="/register"
+                  onClick={() => setIsLoadingPage(true)}
+                >
                   Register
                 </a>
               </span>

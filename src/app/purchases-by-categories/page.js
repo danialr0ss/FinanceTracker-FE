@@ -1,7 +1,6 @@
 "use client";
 import Sidebar from "./components/Sidebar";
 import Purchases from "./components/Purchases";
-
 export default function Page() {
   return (
     <div

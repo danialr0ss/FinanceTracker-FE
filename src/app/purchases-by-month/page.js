@@ -16,6 +16,7 @@ import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import { Button } from "@/components/ui/button";
 import SkeletonLoading from "@/components/SkeletonLoading";
 import { uppercaseFirstLetter } from "@/lib/utils";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {
   const earliestYear = 1950;
@@ -26,6 +27,20 @@ export default function Page() {
   const [selectedYear, setSelectedYear] = useState(year);
   const [queryMonth, setQueryMonth] = useState(month);
   const [queryYear, setQueryYear] = useState(year);
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
+  const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
+  const { data: currentMonthlyPurchases, isLoading: isLoadingPurchases } =
+    useGetPurchasesQuery({
+      month: queryMonth,
+      year: queryYear,
+    });
+  const years = Array.from({ length: now.getFullYear() - earliestYear + 1 });
+  const purchases = currentMonthlyPurchases
+    ? currentMonthlyPurchases.purchases
+    : [];
+  const totalAmountSpent = currentMonthlyPurchases
+    ? currentMonthlyPurchases.total
+    : 0;
 
   const months = [
     { name: "January", number: 0 },
@@ -41,19 +56,6 @@ export default function Page() {
     { name: "November", number: 10 },
     { name: "December", number: 11 },
   ];
-
-  const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
-  const { data: currentMonthlyPurchases, isLoading } = useGetPurchasesQuery({
-    month: queryMonth,
-    year: queryYear,
-  });
-  const years = Array.from({ length: now.getFullYear() - earliestYear + 1 });
-  const purchases = currentMonthlyPurchases
-    ? currentMonthlyPurchases.purchases
-    : [];
-  const totalAmountSpent = currentMonthlyPurchases
-    ? currentMonthlyPurchases.total
-    : 0;
 
   const summary = [
     {
@@ -160,9 +162,14 @@ export default function Page() {
   }
 
   return (
-    <div className="w-full h-full bg-backgroundColor p-16 overflow-auto border">
+    <div className="w-full h-full bg-backgroundColor p-16 overflow-auto border relative">
+      {isLoadingPage && (
+        <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
+          <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
+        </div>
+      )}
       <div className="flex flex-col  bg-white border-2 rounded-xl p-16 space-y-8">
-        <BackButton />
+        <BackButton setIsLoadingNavigation={setIsLoadingPage} />
         <div className="flex justify-start">
           <div className="w-[400px] mr-8 text-3xl font-bold flex justify-center items-center ">
             Purchases
@@ -217,7 +224,7 @@ export default function Page() {
             {summary.map((item) => (
               <div className="flex justify-between" key={item.header}>
                 <span className="font-bold">{`${item.header} :`}</span>
-                {isLoading ? (
+                {isLoadingPurchases ? (
                   <div className="h-full w-24">
                     <SkeletonLoading />
                   </div>
@@ -237,7 +244,7 @@ export default function Page() {
             </div>
             <div className="w-full border-t-2 border-black" />
             <div className="h-[400px] py-6 space-y-8 overflow-auto">
-              {isLoading ? (
+              {isLoadingPurchases ? (
                 Array.from({ length: 6 }).map((_, index) => (
                   <div
                     className="flex flex-row text-lg border-b-2 items-center pb-2 "

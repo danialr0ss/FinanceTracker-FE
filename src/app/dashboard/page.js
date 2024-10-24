@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import SkeletonLoading from "@/components/SkeletonLoading";
 import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import SignoutButton from "@/components/SignoutButton";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import {
   uppercaseFirstLetter,
   getMostExpensiveCategory,
@@ -25,6 +26,7 @@ export default function Home() {
   const purchases = data?.purchases || [];
   const totalMonthlyAmount = parseFloat(data?.total) | 0;
   const [username, setUsername] = useState("");
+  const [isLoadingPage, setIsLoadingPage] = useState(false);
   function greet() {
     const time = now.getHours();
     if (time < 12) {
@@ -51,11 +53,11 @@ export default function Home() {
   const summary = [
     {
       label: "Total Monthly Spending : ",
-      value: totalMonthlyAmount.toFixed(2),
+      value: `$${totalMonthlyAmount.toFixed(2)}`,
     },
     {
       label: "Most Expensive Purchase : ",
-      value: `${getMostExpensivePurchase(purchases)}`,
+      value: `$${getMostExpensivePurchase(purchases)}`,
     },
     {
       label: "Most Spent On Category: ",
@@ -84,7 +86,12 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-full p-16 bg-backgroundColor">
+    <div className="w-full h-full p-16 bg-backgroundColor relative">
+      {isLoadingPage && (
+        <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
+          <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
+        </div>
+      )}
       <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
         <h1 className="text-3xl font-bold px-16 inline-flex">
           {`Good ${greet()}, `}
@@ -103,6 +110,7 @@ export default function Home() {
               title={item?.title}
               href={item?.href}
               icon={item?.icon}
+              onClick={() => setIsLoadingPage(true)}
             />
           ))}
           <SettingsButton />
