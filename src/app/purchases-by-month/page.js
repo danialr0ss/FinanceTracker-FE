@@ -15,11 +15,12 @@ import {
 import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import { Button } from "@/components/ui/button";
 import SkeletonLoading from "@/components/SkeletonLoading";
+import { uppercaseFirstLetter } from "@/lib/utils";
 
 export default function Page() {
   const earliestYear = 1950;
   const now = new Date();
-  const month = now.getMonth();
+  const month = now.getMonth() + 1;
   const year = now.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(month);
   const [selectedYear, setSelectedYear] = useState(year);
@@ -27,18 +28,18 @@ export default function Page() {
   const [queryYear, setQueryYear] = useState(year);
 
   const months = [
-    { name: "January", number: 1 },
-    { name: "February", number: 2 },
-    { name: "March", number: 3 },
-    { name: "April", number: 4 },
-    { name: "May", number: 5 },
-    { name: "June", number: 6 },
-    { name: "July", number: 7 },
-    { name: "August", number: 8 },
-    { name: "September", number: 9 },
-    { name: "October", number: 10 },
-    { name: "November", number: 11 },
-    { name: "December", number: 12 },
+    { name: "January", number: 0 },
+    { name: "February", number: 1 },
+    { name: "March", number: 2 },
+    { name: "April", number: 3 },
+    { name: "May", number: 4 },
+    { name: "June", number: 5 },
+    { name: "July", number: 6 },
+    { name: "August", number: 7 },
+    { name: "September", number: 8 },
+    { name: "October", number: 9 },
+    { name: "November", number: 10 },
+    { name: "December", number: 11 },
   ];
 
   const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
@@ -57,7 +58,7 @@ export default function Page() {
   const summary = [
     {
       header: "Month",
-      label: `${monthToString(queryMonth)} ${queryYear}`,
+      label: `${monthToString(queryMonth + 1)} ${queryYear}`,
     },
     {
       header: "Days In Month",
@@ -77,7 +78,7 @@ export default function Page() {
     },
     {
       header: "Most Spent Category",
-      label: getMostExpensiveCategory(purchases),
+      label: uppercaseFirstLetter(getMostExpensiveCategory(purchases)),
     },
   ];
 
@@ -178,7 +179,7 @@ export default function Page() {
                     key={item.name}
                     className="text-lg"
                   >
-                    {`${item.name} (${item.number})`}
+                    {`${item.name} (${item.number + 1})`}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -236,45 +237,51 @@ export default function Page() {
             </div>
             <div className="w-full border-t-2 border-black" />
             <div className="h-[400px] py-6 space-y-8 overflow-auto">
-              {isLoading
-                ? Array.from({ length: 6 }).map((_, index) => (
-                    <div
-                      className="flex flex-row text-lg border-b-2 items-center pb-2 "
-                      key={index}
-                    >
-                      <div className={"h-6 w-40 mr-8 "}>
-                        <SkeletonLoading />
-                      </div>
-                      <div className={"h-6 w-36 mr-8"}>
-                        <SkeletonLoading />
-                      </div>
-                      <div className={"h-6 w-60 mr-8"}>
-                        <SkeletonLoading />
-                      </div>
-                      <div className={"h-6 w-64 mr-8"}>
-                        <SkeletonLoading />
-                      </div>
-                      <div className={"h-6 w-48 mr-8"}>
-                        <SkeletonLoading />
-                      </div>
+              {isLoading ? (
+                Array.from({ length: 6 }).map((_, index) => (
+                  <div
+                    className="flex flex-row text-lg border-b-2 items-center pb-2 "
+                    key={index}
+                  >
+                    <div className={"h-6 w-40 mr-8 "}>
+                      <SkeletonLoading />
                     </div>
-                  ))
-                : purchases.map((item, index) => {
-                    const { date, time } = parseDate(item.date);
-                    return (
-                      <div className="text-lg border-b-2" key={index}>
-                        <span className="w-[196px] inline-block">
-                          ${item.amount}
-                        </span>
-                        <span className="w-[170px] inline-block">{time}</span>
-                        <span className="w-[268px] inline-block">{date}</span>
-                        <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
-                          {item.label}
-                        </span>
-                        <span>{item.category}</span>
-                      </div>
-                    );
-                  })}
+                    <div className={"h-6 w-36 mr-8"}>
+                      <SkeletonLoading />
+                    </div>
+                    <div className={"h-6 w-60 mr-8"}>
+                      <SkeletonLoading />
+                    </div>
+                    <div className={"h-6 w-64 mr-8"}>
+                      <SkeletonLoading />
+                    </div>
+                    <div className={"h-6 w-48 mr-8"}>
+                      <SkeletonLoading />
+                    </div>
+                  </div>
+                ))
+              ) : purchases && purchases.length > 0 ? (
+                purchases.map((item, index) => {
+                  const { date, time } = parseDate(item.date);
+                  return (
+                    <div className="text-lg border-b-2" key={index}>
+                      <span className="w-[196px] inline-block">
+                        ${item.amount.toFixed(2)}
+                      </span>
+                      <span className="w-[170px] inline-block">{time}</span>
+                      <span className="w-[268px] inline-block">{date}</span>
+                      <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
+                        {item.label}
+                      </span>
+                      <span>{item.category}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="w-full h-full flex justify-center items-center text-xl ">
+                  No Purchases Made
+                </div>
+              )}
             </div>
           </div>
         </div>
