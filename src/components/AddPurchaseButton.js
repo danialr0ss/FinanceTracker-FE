@@ -20,6 +20,7 @@ export default function AddPurchaseButton() {
   const tranformY = "translate-y-24";
 
   const [addMessage, setAddMessage] = useState("");
+  const [addStatus, setAddStatus] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [addPurchase] = useAddPurchaseMutation();
 
@@ -41,14 +42,17 @@ export default function AddPurchaseButton() {
       await addPurchase(data).unwrap();
       reset();
       setAddMessage(successAddMessage);
+      setAddStatus("success");
     } catch (err) {
       setAddMessage(failedAddMessage);
+      setAddStatus("destructive");
     }
   };
 
   const handleOnEnter = (e) => {
     if (e.key === "Enter") {
-      handleSubmit(handleAddPurchase);
+      e.preventDefault();
+      handleSubmit(handleAddPurchase)();
     }
   };
 
@@ -109,21 +113,10 @@ export default function AddPurchaseButton() {
           <DialogTitle>Add Purchase</DialogTitle>
           <div className=" space-y-6">
             <div
-              className={`w-[462px] absolute duration-300 ease-in-out ${addMessage ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+              className={`w-[462px] absolute duration-100 ease-in-out ${addMessage ? "opacity-100" : "opacity-0 pointer-events-none"}`}
             >
-              {addMessage === successAddMessage ? (
-                <ActionStatus
-                  variant={"success"}
-                  description={successAddMessage}
-                />
-              ) : (
-                <ActionStatus
-                  variant={"destructive"}
-                  description={failedAddMessage}
-                />
-              )}
+              <ActionStatus variant={addStatus} description={addMessage} />
             </div>
-
             {fields.map((item) => (
               <div
                 className={`space-y-3  duration-300 ease-in-out  ${addMessage && tranformY}`}

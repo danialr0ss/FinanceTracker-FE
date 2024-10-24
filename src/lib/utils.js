@@ -37,3 +37,11 @@ export function getMostExpensiveCategory(purchases) {
 
   return mostExpensiveCategory.category;
 }
+
+export function uppercaseFirstLetter(word) {
+  if (!word) {
+    return;
+  }
+
+  return word[0].toUpperCase() + word.substring(1);
+}

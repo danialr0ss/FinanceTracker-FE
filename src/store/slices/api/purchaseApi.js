@@ -30,11 +30,7 @@ const purchaseApi = createApi({
           query += "year=" + year;
         }
 
-        if (query.length > 1) {
-          return query;
-        }
-
-        return "";
+        return query.length > 1 ? query : "";
       },
       transformResponse: (response) => {
         const transformedPurchases = response.purchases.map((purchase) => ({
@@ -47,7 +43,10 @@ const purchaseApi = createApi({
           total: parseFloat(response.total),
         };
       },
-      invalidatesTags: ["Purchase"],
+      providesTags: (result) =>
+        result
+          ? [...result.purchases.map(({ id }) => ({ id, type: "Purchase" }))]
+          : ["Purchase"],
     }),
   }),
 });

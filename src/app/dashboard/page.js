@@ -9,6 +9,7 @@ import SkeletonLoading from "@/components/SkeletonLoading";
 import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import SignoutButton from "@/components/SignoutButton";
 import {
+  uppercaseFirstLetter,
   getMostExpensiveCategory,
   getMostExpensivePurchase,
 } from "@/lib/utils";
@@ -44,6 +45,21 @@ export default function Home() {
       title: "Purchase History",
       icon: FaRegCalendarCheck,
       href: "/purchases-by-month",
+    },
+  ];
+
+  const summary = [
+    {
+      label: "Total Monthly Spending : ",
+      value: totalMonthlyAmount.toFixed(2),
+    },
+    {
+      label: "Most Expensive Purchase : ",
+      value: `${getMostExpensivePurchase(purchases)}`,
+    },
+    {
+      label: "Most Spent On Category: ",
+      value: uppercaseFirstLetter(getMostExpensiveCategory(purchases)),
     },
   ];
 
@@ -124,7 +140,9 @@ export default function Home() {
                     <span className="w-44 inline-block">
                       ${item?.amount.toFixed(2)}
                     </span>
-                    <span className="w-72 truncate">{item?.category}</span>
+                    <span className="w-72 truncate">
+                      {uppercaseFirstLetter(item?.category)}
+                    </span>
                   </div>
                 ))
               ) : (
@@ -140,38 +158,18 @@ export default function Home() {
             <h2 className="text-2xl pb-8 font-bold">Summary</h2>
             <div className="border-2 rounded-xl px-8 py-4 w-[750px] h-[300px] ">
               <div className="text-xl">
-                <div className="p-4 flex justify-between">
-                  <p className="font-bold">Total Monthly Spending : </p>
-                  {isLoadingPurchases ? (
-                    <div className="w-[250px] h-[25px]">
-                      <SkeletonLoading />
-                    </div>
-                  ) : (
-                    <p>${totalMonthlyAmount.toFixed(2)}</p>
-                  )}
-                </div>
-                <div className="p-4 flex justify-between">
-                  <p className="font-bold">Most Expensive Purchase : </p>
-                  {isLoadingPurchases ? (
-                    <div className="w-[250px] h-[25px] ">
-                      <SkeletonLoading />
-                    </div>
-                  ) : (
-                    <p>${getMostExpensivePurchase(purchases)}</p>
-                  )}
-                </div>
-                <div className="p-4 flex justify-between">
-                  <p className="font-bold">Most Spent On Category : </p>
-                  {isLoadingPurchases ? (
-                    <div className="w-[250px] h-[25px]">
-                      <SkeletonLoading />
-                    </div>
-                  ) : (
-                    <p className="w-80 truncate text-end">
-                      {getMostExpensiveCategory(purchases)}
-                    </p>
-                  )}
-                </div>
+                {summary.map((item) => (
+                  <div className="p-4 flex justify-between" key={item.label}>
+                    <p className="font-bold">{item.label}</p>
+                    {isLoadingPurchases ? (
+                      <div className="w-[250px] h-[25px]">
+                        <SkeletonLoading />
+                      </div>
+                    ) : (
+                      <p>{item.value}</p>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
