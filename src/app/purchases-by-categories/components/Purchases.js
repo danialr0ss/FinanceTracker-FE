@@ -6,12 +6,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Purchases() {
   const [isLoading, setIsLoading] = useState(true);
-  const selectedCategory = useSelector(
-    (state) => state.history.currentCategory
-  );
+  const selectedCategory = [];
+  // useSelector(
+  //   (state) => state.history.currentCategory
+  // );
   const imageSrc = "/homeImage.jpg";
 
-  const reversedPurchases = [...selectedCategory?.purchases].reverse();
+  const reversedPurchases = [];
+  // [...selectedCategory?.purchases].reverse();
 
   useEffect(() => {
     const img = new Image();

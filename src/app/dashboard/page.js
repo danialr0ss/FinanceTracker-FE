@@ -9,6 +9,8 @@ import SkeletonLoading from "@/components/SkeletonLoading";
 import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import SignoutButton from "@/components/SignoutButton";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { AiOutlineSwap } from "react-icons/ai";
+
 import {
   uppercaseFirstLetter,
   getMostExpensiveCategory,
@@ -23,7 +25,9 @@ export default function Home() {
     month: month,
     year: year,
   });
-  const purchases = data?.purchases || [];
+
+  // show latest purchase first
+  let purchases = [...(data?.purchases || [])].reverse();
   const totalMonthlyAmount = parseFloat(data?.total) | 0;
   const [username, setUsername] = useState("");
   const [isLoadingPage, setIsLoadingPage] = useState(false);
@@ -39,8 +43,8 @@ export default function Home() {
 
   const shortcuts = [
     {
-      title: "Purchases By Category",
-      icon: BiCategory,
+      title: "Manage Purchases",
+      icon: AiOutlineSwap,
       href: "/purchases-by-categories",
     },
     {

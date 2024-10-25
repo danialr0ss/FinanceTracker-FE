@@ -11,8 +11,10 @@ import BackButton from "@/components/BackButton";
 export default function Sidebar() {
   const [isAdding, setIsAdding] = useState(false);
   const [newName, setNewName] = useState("");
-  // const categories = useSelector((state) => state.history.categories);
-  // const selectedCategory = useSelector(
+  const categories = [];
+  // useSelector((state) => state.history.categories);
+  const selectedCategory = "";
+  // useSelector(
   //   (state) => state.history.currentCategory
   // );
   const inputRef = useRef(null);
@@ -84,14 +86,14 @@ export default function Sidebar() {
     }
   }, [isAdding]);
 
-  useEffect(() => {
-    if (endOfScrollRef.current) {
-      endOfScrollRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
-  }, [categories]);
+  // useEffect(() => {
+  //   if (endOfScrollRef.current) {
+  //     endOfScrollRef.current.scrollIntoView({
+  //       behavior: "smooth",
+  //       block: "end",
+  //     });
+  //   }
+  // }, [categories]);
 
   return (
     <div
