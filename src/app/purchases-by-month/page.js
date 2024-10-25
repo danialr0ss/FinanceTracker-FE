@@ -21,14 +21,17 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 export default function Page() {
   const earliestYear = 1950;
   const now = new Date();
-  const month = now.getMonth() + 1;
+  const month = now.getMonth();
+  console.log(month);
   const year = now.getFullYear();
   const [selectedMonth, setSelectedMonth] = useState(month);
   const [selectedYear, setSelectedYear] = useState(year);
-  const [queryMonth, setQueryMonth] = useState(month);
+  const [queryMonth, setQueryMonth] = useState(month + 1);
   const [queryYear, setQueryYear] = useState(year);
+  const [daysInMonth, setDaysInMonth] = useState(
+    new Date(year, month + 1, 0).getDate()
+  );
   const [isLoadingPage, setIsLoadingPage] = useState(false);
-  const daysInMonth = `${new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()}`;
   const { data: currentMonthlyPurchases, isLoading: isLoadingPurchases } =
     useGetPurchasesQuery({
       month: queryMonth,
@@ -60,7 +63,7 @@ export default function Page() {
   const summary = [
     {
       header: "Month",
-      label: `${monthToString(queryMonth + 1)} ${queryYear}`,
+      label: `${monthToString(queryMonth)} ${queryYear}`,
     },
     {
       header: "Days In Month",
@@ -85,8 +88,9 @@ export default function Page() {
   ];
 
   function handleQueryPurchases() {
-    setQueryMonth(selectedMonth);
+    setQueryMonth(selectedMonth + 1);
     setQueryYear(selectedYear);
+    setDaysInMonth(new Date(year, selectedMonth + 1, 0).getDate());
   }
 
   function monthToString(month) {
