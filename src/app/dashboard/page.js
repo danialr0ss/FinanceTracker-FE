@@ -1,6 +1,5 @@
 "use client";
 import ShortcutButton from "@/components/ShortcutButton";
-import { BiCategory } from "react-icons/bi";
 import { FaRegCalendarCheck } from "react-icons/fa6";
 import AddPurchaseButton from "@/components/AddPurchaseButton";
 import SettingsButton from "@/components/SettingsButton";
@@ -45,7 +44,7 @@ export default function Home() {
     {
       title: "Manage Purchases",
       icon: AiOutlineSwap,
-      href: "/purchases-by-categories",
+      href: "/manage-purchases",
     },
     {
       title: "Purchase History",
@@ -90,14 +89,14 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-full p-16 bg-backgroundColor relative">
+    <div className="h-full p-outer-padding bg-backgroundColor relative">
       {isLoadingPage && (
         <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
           <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
         </div>
       )}
-      <div className="flex flex-col  w-full h-full p-12 border-2 rounded-xl bg-white space-y-12">
-        <h1 className="text-3xl font-bold px-16 inline-flex">
+      <div className="flex flex-1 flex-col w-full h-full p-inner-padding border-2 rounded-xl bg-white space-y-12">
+        <h1 className="text-3xl font-bold inline-flex">
           {`Good ${greet()}, `}
           {username || (
             <div className={"w-[200px]"}>
@@ -105,8 +104,7 @@ export default function Home() {
             </div>
           )}
         </h1>
-
-        <div className="flex flex-1 justify-evenly gap-16">
+        <div className="flex justify-between gap-16">
           <AddPurchaseButton />
           {shortcuts.map((item, index) => (
             <ShortcutButton
@@ -120,10 +118,10 @@ export default function Home() {
           <SettingsButton />
           <SignoutButton />
         </div>
-        <div className="flex flex-1 justify-evenly">
-          <div className="">
-            <h2 className="text-2xl pb-8 font-bold">Recent Purchases</h2>
-            <div className="border-2 rounded-xl px-8 py-4 w-[750px] h-[300px] overflow-scroll">
+        <div className="flex justify-between  gap-24 h-[266px]">
+          <div className="space-y-8 w-full h-full">
+            <h2 className="text-2xl font-bold">Recent Purchases</h2>
+            <div className="border-2 rounded-xl px-8 py-4 w-full h-full overflow-scroll">
               <div className="text-xl font-bold m-4">
                 <span className="w-52 inline-block">Date</span>
                 <span className="w-44 inline-block">Amount</span>
@@ -166,9 +164,9 @@ export default function Home() {
               )}
             </div>
           </div>
-          <div>
-            <h2 className="text-2xl pb-8 font-bold">Summary</h2>
-            <div className="border-2 rounded-xl px-8 py-4 w-[750px] h-[300px] ">
+          <div className="space-y-8 w-full h-full">
+            <h2 className="text-2xl font-bold">Summary</h2>
+            <div className="border-2 rounded-xl px-8 py-4 w-full h-full">
               <div className="text-xl">
                 {summary.map((item) => (
                   <div className="p-4 flex justify-between" key={item.label}>
