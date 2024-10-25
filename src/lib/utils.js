@@ -38,10 +38,16 @@ export function getMostExpensiveCategory(purchases) {
   return mostExpensiveCategory.category;
 }
 
-export function uppercaseFirstLetter(word) {
-  if (!word) {
+export function uppercaseFirstLetter(sentence) {
+  if (!sentence) {
     return;
   }
+  const words = sentence.split(" ");
+  let newSentence = "";
+  for (const word of words) {
+    newSentence = word[0].toUpperCase() + word.substring(1);
+    +" ";
+  }
 
-  return word[0].toUpperCase() + word.substring(1);
+  return newSentence.trim();
 }
