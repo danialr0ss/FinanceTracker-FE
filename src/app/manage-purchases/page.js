@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState(true);
@@ -45,11 +46,16 @@ export default function Page() {
         "w-full h-full flex justify-center items-center bg-backgroundColor p-outer-padding gap-x-4 relative"
       }
     >
+      {isLoadingNavigation && (
+        <div className="absolute h-full w-full backdrop-blur-lg z-10 top-0 left-0">
+          <LoadingSpinner className="w-64 h-64 absolute  transform top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 " />
+        </div>
+      )}
       <div
         className={"w-full h-full bg-white border-2 rounded-xl p-inner-padding"}
       >
-        <div className={"space-y-10"}>
-          <div className="w-full h-fit space-y-8 pt-4 ">
+        <div className={"space-y-10 "}>
+          <div className="w-full h-fit space-y-8">
             <BackButton setIsLoadingNavigation={setIsLoadingNavigation} />
             {/* <Select onValueChange={setSelectedMonth} value={selectedMonth}> */}
             <div className="h-fit flex gap-8 ">
