@@ -16,54 +16,25 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useDispatch } from "react-redux";
-// import { deletePurchase } from "@/store/slices/historySlice";
 import { Input } from "@/components/ui/input";
-// import { updatePurchase } from "@/store/slices/historySlice";
+import { uppercaseFirstLetter } from "@/lib/utils";
+import { useEditPurchaseMutation } from "@/store/slices/api/purchaseApi";
+import { useDeletePurchaseMutation } from "@/store/slices/api/purchaseApi";
+import { formatDate } from "@/lib/utils";
 
-export default function ExpensesCard({ id, price, label, date }) {
+export default function ExpensesCard({ id, amount, label, date, category }) {
+  const [editPurchase, { isSuccess: isSuccessEdit }] =
+    useEditPurchaseMutation();
+  const [deletePurchase] = useDeletePurchaseMutation();
   const [isEditting, setIsEditting] = useState(false);
-  const dispatch = useDispatch();
   const editRef = useRef(null);
-
-  const formatDate = () => {
-    const dateObject = new Date(date);
-    let month = "";
-
-    if (dateObject.getMonth() === 0) {
-      month = "January";
-    } else if (dateObject.getMonth() === 1) {
-      month = "February";
-    } else if (dateObject.getMonth() === 2) {
-      month = "March";
-    } else if (dateObject.getMonth() === 3) {
-      month = "April";
-    } else if (dateObject.getMonth() === 4) {
-      month = "May";
-    } else if (dateObject.getMonth() === 5) {
-      month = "June";
-    } else if (dateObject.getMonth() === 6) {
-      month = "July";
-    } else if (dateObject.getMonth() === 7) {
-      month = "August";
-    } else if (dateObject.getMonth() === 8) {
-      month = "September";
-    } else if (dateObject.getMonth() === 9) {
-      month = "October";
-    } else if (dateObject.getMonth() === 10) {
-      month = "November";
-    } else {
-      month = "December";
-    }
-
-    return `${dateObject.getDate()} ${month} ${dateObject.getFullYear()}`;
-  };
 
   const defaultValues = {
     id: id,
-    price: price,
+    amount: amount,
     label: label,
-    date: date,
+    date: `${new Date(date).getFullYear()}-${new Date(date).getMonth() + 1}-${new Date(date).getDate()}`,
+    category: category,
   };
 
   const { register, handleSubmit, reset } = useForm({ defaultValues });
@@ -81,20 +52,17 @@ export default function ExpensesCard({ id, price, label, date }) {
     setIsEditting(false);
   };
 
-  // const handleDeleteExpenses = (purchaseId) => {
-  //   dispatch(deletePurchase(purchaseId));
-  // };
+  const handleDeletePurchase = async (id) => {
+    await deletePurchase({ id });
+  };
 
-  // const handleUpdatePurchase = (data) => {
-  //   const newPurchase = {
-  //     id: id,
-  //     label: data.label.trim(),
-  //     price: Number(data.price),
-  //     date: data.date,
-  //   };
-  //   dispatch(updatePurchase(newPurchase));
-  //   handleStopEditting();
-  // };
+  const handleUpdatePurchase = async (data) => {
+    data.amount = Number(data.amount);
+    await editPurchase(data);
+    if (isSuccessEdit) {
+      handleStopEditting();
+    }
+  };
 
   const handlePressEnter = (e) => {
     if (e.key === "Enter") {
@@ -118,7 +86,7 @@ export default function ExpensesCard({ id, price, label, date }) {
   }, [handleCancelEditting]);
 
   return (
-    <div className="h-64 w-full p-6 border-2 rounded-lg flex flex-col justify-start items-start duration-100">
+    <div className="h-56 w-full p-6 border-2 rounded-lg flex flex-col justify-start items-start duration-100">
       {isEditting ? (
         <form
           onSubmit={handleSubmit(handleUpdatePurchase)}
@@ -132,20 +100,28 @@ export default function ExpensesCard({ id, price, label, date }) {
               <div className="flex items-center gap-x-2 font-bold ">
                 $
                 <Input
-                  className="text-lg"
+                  className="text-md w-24"
                   placeholder="Amount"
-                  {...register("price", {
+                  {...register("amount", {
                     required: "Required",
                     pattern: /^\d+(\.\d+)?$/,
+                  })}
+                  onKeyDown={handlePressEnter}
+                />
+                <Input
+                  className="text-md"
+                  placeholder="Label"
+                  {...register("label", {
+                    required: "Required",
                   })}
                   onKeyDown={handlePressEnter}
                 />
               </div>
               <div className="space-y-2">
                 <Input
-                  className="text-lg font-bold"
-                  placeholder="Title"
-                  {...register("label", {
+                  className="text-md font-bold"
+                  placeholder="category"
+                  {...register("category", {
                     required: "Required",
                   })}
                   onKeyDown={handlePressEnter}
@@ -169,22 +145,29 @@ export default function ExpensesCard({ id, price, label, date }) {
           </div>
         </form>
       ) : (
-        <>
-          <div className="text-3xl font-bold mb-8">${price.toFixed(2)}</div>
-          <div className="h-full w-full">
-            <div className={"font-bold text-xl mb-1"}>{label}</div>
-            <span className=" w-full resize-none overflow-auto border-none p-0 pr-2 mb-2">
+        <div className="w-full h-full flex flex-col">
+          <div className="flex mb-8">
+            <div className="w-32  text-xl font-bold">${amount.toFixed(2)}</div>
+            <div className={"flex-1 font-bold text-lg mb-1 text-right"}>
+              {uppercaseFirstLetter(label)}
+            </div>
+          </div>
+          <div className="h-full w-full mb-4">
+            <div className={"text-md mb-1"}>
+              {uppercaseFirstLetter(category)}
+            </div>
+            <span className=" w-full resize-none overflow-auto border-none p-0 pr-2 mb-2 text-sm">
               {formatDate(date)}
             </span>
           </div>
           <div className="w-full h-full flex justify-between text-5xl rounded-lg">
             <button onClick={handleStartEditting}>
-              <CiEdit className=" p-2 hover:text-white hover:bg-black rounded-lg transition-colors" />
+              <CiEdit className=" py-2 hover:text-white hover:bg-black rounded-lg transition-colors" />
             </button>
             <Dialog>
               <DialogTrigger asChild>
                 <button>
-                  <IoIosRemoveCircleOutline className="p-2 text-red-500  hover:text-white hover:bg-red-500 rounded-lg transition-colors" />
+                  <IoIosRemoveCircleOutline className="py-2 text-red-500  hover:text-white hover:bg-red-500 rounded-lg transition-colors" />
                 </button>
               </DialogTrigger>
               <DialogContent>
@@ -203,7 +186,7 @@ export default function ExpensesCard({ id, price, label, date }) {
                   <DialogClose asChild>
                     <Button
                       variant="destructive"
-                      onClick={() => handleDeleteExpenses(id)}
+                      onClick={() => handleDeletePurchase(id)}
                     >
                       Delete
                     </Button>
@@ -212,7 +195,7 @@ export default function ExpensesCard({ id, price, label, date }) {
               </DialogContent>
             </Dialog>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

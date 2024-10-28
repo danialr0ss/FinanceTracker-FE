@@ -7,6 +7,17 @@ const purchaseApi = createApi({
   }),
   tagTypes: ["Purchase"],
   endpoints: (build) => ({
+    editPurchase: build.mutation({
+      query: (body) => {
+        const { id, ...rest } = body;
+        return {
+          url: `/${id}`,
+          method: "PATCH",
+          body: rest,
+        };
+      },
+      invalidatesTags: ({ id }) => [{ id, type: "Purchase" }],
+    }),
     addPurchase: build.mutation({
       query: (body) => {
         return {
@@ -17,20 +28,28 @@ const purchaseApi = createApi({
       },
       invalidatesTags: ["Purchase"],
     }),
+    deletePurchase: build.mutation({
+      query: (body) => {
+        return {
+          url: `/${body.id}`,
+          method: "DELETE",
+        };
+      },
+      invalidatesTags: ({ id }) => [{ id, type: "Purchase" }],
+    }),
     getPurchases: build.query({
-      query: ({ category, month, year }) => {
-        let query = "?";
-        if (category) {
-          query += "category=" + category + "&";
+      query: (params) => {
+        console.log(params);
+        const filteredParams = {};
+        for (const param of Object.keys(params)) {
+          if (params[param] !== "") {
+            filteredParams[param] = params[param];
+          }
         }
-        if (month) {
-          query += "month=" + month + "&";
-        }
-        if (year) {
-          query += "year=" + year;
-        }
+        console.log(filteredParams);
 
-        return query.length > 1 ? query : "";
+        const queryString = new URLSearchParams(filteredParams).toString();
+        return { url: `?${queryString}`, method: "GET" };
       },
       transformResponse: (response) => {
         const transformedPurchases = response.purchases.map((purchase) => ({
@@ -51,5 +70,10 @@ const purchaseApi = createApi({
   }),
 });
 
-export const { useAddPurchaseMutation, useGetPurchasesQuery } = purchaseApi;
+export const {
+  useAddPurchaseMutation,
+  useGetPurchasesQuery,
+  useEditPurchaseMutation,
+  useDeletePurchaseMutation,
+} = purchaseApi;
 export default purchaseApi;

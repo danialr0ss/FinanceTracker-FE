@@ -1,9 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import ExpensesCard from "./components/ExpensesCard";
-import AddCard from "./components/AddCard";
 import BackButton from "@/components/BackButton";
+import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { Input } from "@/components/ui/input";
+import { useGetPurchasesQuery } from "@/store/slices/api/purchaseApi";
 import {
   Select,
   SelectContent,
@@ -11,35 +14,52 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import { years, months } from "@/lib/utils";
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState(true);
+  const now = new Date();
   const [isLoadingNavigation, setIsLoadingNavigation] = useState(false);
+  const [searchMonth, setSearchMonth] = useState(now.getMonth() + 1);
+  const [searchYear, setSearchYear] = useState(now.getFullYear());
+  const [searchLabel, setSearchLabel] = useState("");
+  const [searchCategory, setSearchCategory] = useState("");
+  const [categoryInput, setCategoryInput] = useState("");
+  const [labelInput, setLabelInput] = useState("");
+  const [monthInput, setMonthInput] = useState(searchMonth);
+  const [yearInput, setYearInput] = useState(searchYear);
 
-  const selectedCategory = [];
-  // useSelector(
-  //   (state) => state.history.currentCategory
-  // );
-  const imageSrc = "/homeImage.jpg";
+  const { data, isLoading: isLoadingPurchases } = useGetPurchasesQuery({
+    label: searchLabel,
+    category: searchCategory,
+    month: searchMonth,
+    year: searchYear,
+  });
 
-  const reversedPurchases = [];
-  // [...selectedCategory?.purchases].reverse();
+  const purchases = data ? [...data?.purchases].reverse() : [];
 
-  useEffect(() => {
-    const img = new Image();
+  const handleSearchQuery = () => {
+    setSearchCategory(categoryInput);
+    setSearchLabel(labelInput);
+    if (monthInput === "Any Month") {
+      setSearchMonth("");
+    } else {
+      setSearchMonth(Number(monthInput));
+    }
 
-    img.src = imageSrc;
+    if (yearInput === "Any Year") {
+      setSearchYear("");
+    } else {
+      setSearchYear(Number(yearInput));
+    }
+  };
 
-    img.onload = () => {
-      setIsLoading(false);
-    };
+  const handleClearQuery = () => {
+    setCategoryInput("");
+    setLabelInput("");
+    setMonthInput("Any Month");
+    setYearInput("Any Year");
+  };
 
-    img.onerror = () => {
-      setIsLoading(false);
-    };
-  }, [imageSrc]);
   return (
     <div
       className={
@@ -54,97 +74,101 @@ export default function Page() {
       <div
         className={"w-full h-full bg-white border-2 rounded-xl p-inner-padding"}
       >
-        <div className={"space-y-10 "}>
-          <div className="w-full h-fit space-y-8">
+        <div className={"w-full h-full space-y-10 flex flex-col"}>
+          <div className="w-auto h-fit space-y-8">
             <BackButton setIsLoadingNavigation={setIsLoadingNavigation} />
-            {/* <Select onValueChange={setSelectedMonth} value={selectedMonth}> */}
-            <div className="h-fit flex gap-8 ">
-              <Select>
+            <div className="flex flex-1 gap-8">
+              <Select onValueChange={setMonthInput} value={monthInput}>
                 <SelectTrigger className="text-lg p-8 border-2">
                   <SelectValue placeholder="Select A Month" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* {months.map((item) => (
-                  <SelectItem
-                  value={item.number}
-                  key={item.name}
-                  className="text-lg"
-                  >
-                  {`${item.name} (${item.number + 1})`}
+                  {months.map((item) => (
+                    <SelectItem
+                      value={item.number + 1}
+                      key={item.name}
+                      className="text-lg"
+                    >
+                      {`${item.name} (${item.number + 1})`}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value={"Any Month"} className="text-lg">
+                    Any Month
                   </SelectItem>
-                  ))} */}
                 </SelectContent>
               </Select>
-              {/* <Select onValueChange={setSelectedYear} value={selectedYear}> */}
-              <Select>
+              <Select onValueChange={setYearInput} value={yearInput}>
                 <SelectTrigger className="text-lg p-8 border-2">
                   <SelectValue placeholder="Select A Year" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* {years.map((_, index) => (
-                  <SelectItem
-                  value={year - index}
-                  key={year - index}
-                  className="text-lg"
-                  >
-                  {year - index}
+                  {years.map((item) => (
+                    <SelectItem value={item} key={item} className="text-lg">
+                      {item}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value={"Any Year"} className="text-lg">
+                    Any Year
                   </SelectItem>
-                  ))} */}
-                </SelectContent>
-              </Select>{" "}
-              <Select>
-                <SelectTrigger className="text-lg p-8 border-2">
-                  <SelectValue placeholder="Select A Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* {years.map((_, index) => (
-                  <SelectItem
-                  value={year - index}
-                  key={year - index}
-                  className="text-lg"
-                  >
-                  {year - index}
-                  </SelectItem>
-                  ))} */}
                 </SelectContent>
               </Select>
+              <Input
+                placeholder="Search A Label"
+                className="w-full h-auto text-lg  border-2 "
+                onChange={(e) => setLabelInput(e.target.value)}
+                value={labelInput}
+              />
+              <Input
+                placeholder="Search A Category"
+                className="w-full h-auto text-lg border-2"
+                onChange={(e) => setCategoryInput(e.target.value)}
+                value={categoryInput}
+              />
               <Button
                 className="h-auto w-32 text-md p-4"
-                // onClick={handleQueryPurchases}
+                onClick={handleSearchQuery}
               >
                 Search
               </Button>
+              <Button
+                className="h-auto w-32 text-md p-4"
+                variant="outline"
+                onClick={handleClearQuery}
+              >
+                Clear
+              </Button>
             </div>
           </div>
-          {selectedCategory.name?.length !== 0 ? (
+          {isLoadingPurchases ? (
+            <div className="grid grid-cols-4 grid-row-2 justify-items-stretch gap-x-16 gap-y-8">
+              {Array.from({ length: 8 }).map((_, index) => (
+                <Skeleton className={`h-56 rounded-xl`} key={index} />
+              ))}
+            </div>
+          ) : purchases.length !== 0 ? (
             <div
               className={
-                "w-full h-full grid grid-cols-4 auto-rows-min gap-8 overflow-auto pr-4"
+                "flex-1  grid grid-cols-4 gap-x-16 gap-y-8 overflow-auto"
               }
             >
-              <AddCard />
-              {/* make copy then reverse to show latest item first */}
-              {reversedPurchases.map((item, index) => (
+              {purchases.map((item, index) => (
                 <ExpensesCard
                   key={index}
                   id={item.id}
-                  price={item.price}
+                  amount={item.amount}
                   label={item.label}
                   date={item.date}
+                  category={item.category}
                 />
               ))}
             </div>
           ) : (
-            <div className="w-full h-full flex justify-center items-center">
-              {isLoading ? (
-                <Skeleton className={`h-full w-full rounded-xl`} />
-              ) : (
-                <img
-                  src={imageSrc}
-                  alt="illustration"
-                  className="object-contain overflow-hidden w-auto h-auto"
-                />
-              )}
+            <div className="h-auto flex text-xl items-center justify-start font-bold">
+              No results for "
+              {searchCategory && `Category: ${searchCategory}, `}
+              {searchLabel && `Label : ${searchLabel}, `}
+              {searchMonth && `Month: ${searchMonth}, `}
+              {searchYear && `Year: ${searchYear}, `}
             </div>
           )}
         </div>

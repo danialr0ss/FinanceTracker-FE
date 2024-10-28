@@ -67,6 +67,12 @@ export const months = [
   { name: "December", number: 11 },
 ];
 
-export const years = Array.from({
-  length: new Date().getFullYear() - 1950 + 1,
-});
+export const years = Array.from(
+  { length: new Date().getFullYear() - 1950 + 1 },
+  (_, index) => index + 1950
+);
+
+export const formatDate = (date) => {
+  const dateObject = new Date(date);
+  return `${dateObject.getDate()} ${months[dateObject.getMonth()].name} ${dateObject.getFullYear()}`;
+};

@@ -38,7 +38,6 @@ export default function AddPurchaseButton() {
   const handleAddPurchase = async (data, e) => {
     try {
       data.amount = Number(data.amount);
-      console.log({ body: data });
       await addPurchase(data).unwrap();
       reset();
       setAddMessage(successAddMessage);

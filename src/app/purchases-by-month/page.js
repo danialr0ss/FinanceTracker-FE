@@ -20,7 +20,6 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { years, months } from "@/lib/utils";
 
 export default function Page() {
-  const earliestYear = 1950;
   const now = new Date();
   const month = now.getMonth();
   const year = now.getFullYear();
@@ -72,9 +71,9 @@ export default function Page() {
   ];
 
   function handleQueryPurchases() {
-    setQueryMonth(selectedMonth + 1);
+    setQueryMonth(selectedMonth);
     setQueryYear(selectedYear);
-    setDaysInMonth(new Date(year, selectedMonth + 1, 0).getDate());
+    setDaysInMonth(new Date(year, selectedMonth, 0).getDate());
   }
 
   function monthToString(month) {
@@ -170,7 +169,7 @@ export default function Page() {
               <SelectContent>
                 {months.map((item) => (
                   <SelectItem
-                    value={item.number}
+                    value={item.number + 1}
                     key={item.name}
                     className="text-lg"
                   >
@@ -184,13 +183,9 @@ export default function Page() {
                 <SelectValue placeholder="Select A Year" />
               </SelectTrigger>
               <SelectContent>
-                {years.map((_, index) => (
-                  <SelectItem
-                    value={year - index}
-                    key={year - index}
-                    className="text-lg"
-                  >
-                    {year - index}
+                {years.map((item) => (
+                  <SelectItem value={item} key={item} className="text-lg">
+                    {item}
                   </SelectItem>
                 ))}
               </SelectContent>
