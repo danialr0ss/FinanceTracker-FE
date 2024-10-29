@@ -33,7 +33,7 @@ export default function Page() {
   const { data, isLoading: isLoadingPurchases } =
     useGetPurchasesQuery(queryParams);
 
-  const purchases = data ? [...data?.purchases].reverse() : [];
+  const purchases = data ? data?.purchases : [];
   const handleSearchQuery = () => {
     const newQuery = {};
     if (categoryInput === "") {

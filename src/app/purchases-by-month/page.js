@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import {
+  formatDate,
   getMostExpensiveCategory,
   getMostExpensivePurchase,
 } from "@/lib/utils";
@@ -18,6 +19,7 @@ import SkeletonLoading from "@/components/SkeletonLoading";
 import { uppercaseFirstLetter } from "@/lib/utils";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { years, months } from "@/lib/utils";
+import AddRow from "./components/AddRow";
 
 export default function Page() {
   const now = new Date();
@@ -104,50 +106,6 @@ export default function Page() {
     }
   }
 
-  function parseDate(dateTime) {
-    const dateObj = new Date(dateTime);
-    const year = dateObj.getFullYear();
-
-    let date = dateObj.getDate();
-
-    if (date === 1 || date === 21 || date === 31) {
-      date = date + "st";
-    } else if (date === 2 || date === 22) {
-      date = date + "nd";
-    } else if (date === 3 || date === 23) {
-      date = date + "3rd";
-    } else {
-      date = date + "th";
-    }
-
-    // getMonth is 0-based which required + 1 to be accurate
-    const month = monthToString(dateObj.getMonth() + 1);
-    let hour = dateObj.getHours();
-    let meridiem = " am";
-    let time = "";
-
-    if (hour > 12) {
-      hour = hour - 12;
-      meridiem = " pm";
-    }
-
-    if (hour < 10) {
-      time += `0${hour}:`;
-    } else {
-      time += `${hour}:`;
-    }
-    const minutes = dateObj.getMinutes();
-
-    if (minutes < 10) {
-      time += `0${minutes}`;
-    } else {
-      time += `${minutes}`;
-    }
-
-    time += meridiem;
-    return { date: `${date} ${month} ${year}`, time: time };
-  }
-
   return (
     <div className="w-full h-full bg-backgroundColor p-outer-padding overflow-auto border relative">
       {isLoadingPage && (
@@ -220,53 +178,51 @@ export default function Page() {
           <div className="h-full w-full rounded-xl border-2 border-borderColor p-8">
             <div className="text-lg mb-4 font-bold">
               <span className="mr-32">Amount</span>
-              <span className="mr-32">Time</span>
               <span className="mr-56">Date</span>
-              <span className="mr-64">Label</span>
-              <span>Category</span>
+              <span className="mr-56">Category</span>
+              <span>Label</span>
             </div>
             <div className="w-full border-t-2 border-black" />
             <div className="h-[400px] py-6 space-y-8 overflow-auto">
+              <AddRow month={queryMonth} />
               {isLoadingPurchases ? (
-                Array.from({ length: 6 }).map((_, index) => (
+                Array.from({ length: 5 }).map((_, index) => (
                   <div
-                    className="flex flex-row text-lg border-b-2 items-center pb-2 "
+                    className=" flex flex-row text-lg border-b-2 justify-start pb-2 "
                     key={index}
                   >
-                    <div className={"h-6 w-40 mr-8 "}>
+                    <div className={"h-6 w-40 mr-8"}>
                       <SkeletonLoading />
                     </div>
-                    <div className={"h-6 w-36 mr-8"}>
-                      <SkeletonLoading />
-                    </div>
+
                     <div className={"h-6 w-60 mr-8"}>
                       <SkeletonLoading />
                     </div>
-                    <div className={"h-6 w-64 mr-8"}>
+                    <div className={"h-6 w-72 mr-4"}>
                       <SkeletonLoading />
                     </div>
-                    <div className={"h-6 w-48 mr-8"}>
+                    <div className={"h-6 w-96"}>
                       <SkeletonLoading />
                     </div>
                   </div>
                 ))
               ) : purchases && purchases.length > 0 ? (
-                purchases.map((item, index) => {
-                  const { date, time } = parseDate(item.date);
-                  return (
-                    <div className="text-lg border-b-2" key={index}>
-                      <span className="w-[196px] inline-block">
-                        ${item.amount.toFixed(2)}
-                      </span>
-                      <span className="w-[170px] inline-block">{time}</span>
-                      <span className="w-[268px] inline-block">{date}</span>
-                      <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
-                        {item.label || "-"}
-                      </span>
-                      <span>{uppercaseFirstLetter(item.category)}</span>
-                    </div>
-                  );
-                })
+                purchases.map((item, index) => (
+                  <div className="text-lg border-b-2 " key={index}>
+                    <span className="w-[196px] inline-block">
+                      ${item.amount.toFixed(2)}
+                    </span>
+                    <span className="w-[268px] inline-block">
+                      {formatDate(item.date)}
+                    </span>
+                    <span className="w-[306px] h-fit inline-block  align-top truncate pr-4">
+                      {uppercaseFirstLetter(item.category)}
+                    </span>
+                    <span className="w-[380px] h-fit inline-block  align-top truncate">
+                      {item.label || "-"}
+                    </span>
+                  </div>
+                ))
               ) : (
                 <div className="w-full h-full flex justify-center items-center text-xl ">
                   No Purchases Made
