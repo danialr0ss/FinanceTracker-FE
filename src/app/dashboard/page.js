@@ -26,7 +26,7 @@ export default function Home() {
   });
 
   // show latest purchase first
-  let purchases = [...(data?.purchases || [])].reverse();
+  let purchases = data?.purchases || [];
   const totalMonthlyAmount = parseFloat(data?.total) | 0;
   const [username, setUsername] = useState("");
   const [isLoadingPage, setIsLoadingPage] = useState(false);
