@@ -15,42 +15,51 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { years, months } from "@/lib/utils";
+import SkeletonLoading from "@/components/SkeletonLoading";
+import { BsQuestionSquare } from "react-icons/bs";
 
 export default function Page() {
   const now = new Date();
   const [isLoadingNavigation, setIsLoadingNavigation] = useState(false);
-  const [searchMonth, setSearchMonth] = useState(now.getMonth() + 1);
-  const [searchYear, setSearchYear] = useState(now.getFullYear());
-  const [searchLabel, setSearchLabel] = useState("");
-  const [searchCategory, setSearchCategory] = useState("");
   const [categoryInput, setCategoryInput] = useState("");
   const [labelInput, setLabelInput] = useState("");
-  const [monthInput, setMonthInput] = useState(searchMonth);
-  const [yearInput, setYearInput] = useState(searchYear);
-
-  const { data, isLoading: isLoadingPurchases } = useGetPurchasesQuery({
-    label: searchLabel,
-    category: searchCategory,
-    month: searchMonth,
-    year: searchYear,
+  const [monthInput, setMonthInput] = useState(now.getMonth() + 1);
+  const [yearInput, setYearInput] = useState(now.getFullYear());
+  const [queryParams, setQueryParams] = useState({
+    month: now.getMonth() + 1,
+    year: now.getFullYear(),
   });
 
-  const purchases = data ? [...data?.purchases].reverse() : [];
+  const { data, isLoading: isLoadingPurchases } =
+    useGetPurchasesQuery(queryParams);
 
+  const purchases = data ? [...data?.purchases].reverse() : [];
   const handleSearchQuery = () => {
-    setSearchCategory(categoryInput);
-    setSearchLabel(labelInput);
-    if (monthInput === "Any Month") {
-      setSearchMonth("");
+    const newQuery = {};
+    if (categoryInput === "") {
+      delete newQuery.category;
     } else {
-      setSearchMonth(Number(monthInput));
+      newQuery.category = categoryInput;
+    }
+
+    if (labelInput === "") {
+      delete newQuery.label;
+    } else {
+      newQuery.label = labelInput;
+    }
+
+    if (monthInput === "Any Month") {
+      delete newQuery.month;
+    } else {
+      newQuery.month = monthInput;
     }
 
     if (yearInput === "Any Year") {
-      setSearchYear("");
+      delete newQuery.year;
     } else {
-      setSearchYear(Number(yearInput));
+      newQuery.year = yearInput;
     }
+    setQueryParams(newQuery);
   };
 
   const handleClearQuery = () => {
@@ -140,6 +149,23 @@ export default function Page() {
             </div>
           </div>
           {isLoadingPurchases ? (
+            <div className="h-auto flex text-xl items-center justify-start font-bold">
+              Result for "
+              <div className="w-48 h-6">
+                <SkeletonLoading />
+              </div>
+              "
+            </div>
+          ) : (
+            <div className="h-auto flex text-xl items-center justify-start font-bold">
+              Results for "
+              {queryParams.month && `Month: ${queryParams.month}, `}
+              {queryParams.year && `Year: ${queryParams.year}, `}
+              {queryParams.label && `Label : ${queryParams.label}, `}
+              {queryParams.category && `Category: ${queryParams.category}, `}"
+            </div>
+          )}
+          {isLoadingPurchases ? (
             <div className="grid grid-cols-4 grid-row-2 justify-items-stretch gap-x-16 gap-y-8">
               {Array.from({ length: 8 }).map((_, index) => (
                 <Skeleton className={`h-56 rounded-xl`} key={index} />
@@ -151,9 +177,9 @@ export default function Page() {
                 "flex-1  grid grid-cols-4 gap-x-16 gap-y-8 overflow-auto"
               }
             >
-              {purchases.map((item, index) => (
+              {purchases.map((item) => (
                 <ExpensesCard
-                  key={index}
+                  key={item.id}
                   id={item.id}
                   amount={item.amount}
                   label={item.label}
@@ -163,12 +189,11 @@ export default function Page() {
               ))}
             </div>
           ) : (
-            <div className="h-auto flex text-xl items-center justify-start font-bold">
-              No results for "
-              {searchCategory && `Category: ${searchCategory}, `}
-              {searchLabel && `Label : ${searchLabel}, `}
-              {searchMonth && `Month: ${searchMonth}, `}
-              {searchYear && `Year: ${searchYear}, `}
+            <div className="w-auto h-full flex justify-center items-center text-2xl font-bold ">
+              <div className="flex flex-col justify-center items-center gap-5">
+                <BsQuestionSquare size={64} />
+                No Results
+              </div>
             </div>
           )}
         </div>

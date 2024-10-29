@@ -23,8 +23,7 @@ import { useDeletePurchaseMutation } from "@/store/slices/api/purchaseApi";
 import { formatDate } from "@/lib/utils";
 
 export default function ExpensesCard({ id, amount, label, date, category }) {
-  const [editPurchase, { isSuccess: isSuccessEdit }] =
-    useEditPurchaseMutation();
+  const [editPurchase, { isError: isErrorEdit }] = useEditPurchaseMutation();
   const [deletePurchase] = useDeletePurchaseMutation();
   const [isEditting, setIsEditting] = useState(false);
   const editRef = useRef(null);
@@ -59,7 +58,7 @@ export default function ExpensesCard({ id, amount, label, date, category }) {
   const handleUpdatePurchase = async (data) => {
     data.amount = Number(data.amount);
     await editPurchase(data);
-    if (isSuccessEdit) {
+    if (!isErrorEdit) {
       handleStopEditting();
     }
   };

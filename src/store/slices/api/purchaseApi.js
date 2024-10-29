@@ -39,17 +39,8 @@ const purchaseApi = createApi({
     }),
     getPurchases: build.query({
       query: (params) => {
-        console.log(params);
-        const filteredParams = {};
-        for (const param of Object.keys(params)) {
-          if (params[param] !== "") {
-            filteredParams[param] = params[param];
-          }
-        }
-        console.log(filteredParams);
-
-        const queryString = new URLSearchParams(filteredParams).toString();
-        return { url: `?${queryString}`, method: "GET" };
+        const queryParams = new URLSearchParams(params);
+        return { url: `?${queryParams.toString()}`, method: "GET" };
       },
       transformResponse: (response) => {
         const transformedPurchases = response.purchases.map((purchase) => ({
