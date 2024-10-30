@@ -17,7 +17,7 @@ import {
 } from "./ui/accordion";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import PasswordInput from "./passwordInput";
+import PasswordInput from "./PasswordInput";
 import { ActionStatus } from "./ActionStatus";
 import { useChangePasswordMutation } from "@/store/slices/api/authApi";
 import { useEffect } from "react";
