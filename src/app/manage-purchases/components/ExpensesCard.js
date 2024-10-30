@@ -5,7 +5,7 @@ import {
   IoIosCloseCircleOutline,
 } from "react-icons/io";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import {
@@ -46,10 +46,10 @@ export default function ExpensesCard({ id, amount, label, date, category }) {
     setIsEditting(false);
   };
 
-  const handleCancelEditting = () => {
+  const handleCancelEditting = useCallback(() => {
     reset();
     setIsEditting(false);
-  };
+  });
 
   const handleDeletePurchase = async (id) => {
     await deletePurchase({ id });

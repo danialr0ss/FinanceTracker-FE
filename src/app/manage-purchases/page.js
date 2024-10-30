@@ -150,19 +150,20 @@ export default function Page() {
           </div>
           {isLoadingPurchases ? (
             <div className="h-auto flex text-xl items-center justify-start font-bold">
-              Result for "
+              Result for &quot;
               <div className="w-48 h-6">
                 <SkeletonLoading />
               </div>
-              "
+              &quot;
             </div>
           ) : (
             <div className="h-auto flex text-xl items-center justify-start font-bold">
-              Results for "
+              Results for &quot;
               {queryParams.month && `Month: ${queryParams.month}, `}
               {queryParams.year && `Year: ${queryParams.year}, `}
               {queryParams.label && `Label : ${queryParams.label}, `}
-              {queryParams.category && `Category: ${queryParams.category}, `}"
+              {queryParams.category && `Category: ${queryParams.category}, `}
+              &quot;
             </div>
           )}
           {isLoadingPurchases ? (

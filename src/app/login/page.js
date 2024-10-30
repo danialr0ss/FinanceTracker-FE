@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useLoginMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { useRouter } from "next/navigation";
 import PasswordInput from "@/components/passwordInput";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Image from "next/image";
 
 export default function Page() {
   const router = useRouter();
@@ -31,24 +31,10 @@ export default function Page() {
   };
 
   useEffect(() => {
-    const img = new Image();
-    img.src = imageSrc;
-
-    img.onload = () => {
-      setIsLoadingImage(false);
-    };
-
-    img.onerror = () => {
-      setIsLoadingImage(false);
-    };
-  }, [imageSrc]);
-
-  useEffect(() => {
     setTimeout(() => {
       setLoginErrorMessage("");
     }, 5000);
   }, [loginErrorMessage]);
-
   return (
     <div className="h-full w-full bg-backgroundColor p-16 relative">
       {isLoadingPage && (
@@ -58,17 +44,22 @@ export default function Page() {
       )}
       <div className="w-full h-full rounded-xl bg-white border-2 p-16 flex">
         <div
-          className={`w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden`}
+          className={`w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden relative`}
         >
-          {IsLoadingImage ? (
-            <LoadingSpinner className="w-32 h-32 flex justify-center items-center " />
-          ) : (
-            <img
-              className={`w-full h-full object-contain bg-imageBackground`}
-              src={imageSrc}
-              alt="Financial Illustration"
-              loading="lazy"
-            />
+          <Image
+            className={`w-full h-full object-contain bg-imageBackground`}
+            src={imageSrc}
+            onLoad={() => setIsLoadingImage(false)}
+            onError={() => setIsLoadingImage(false)}
+            width={400}
+            height={400}
+            alt="Financial Illustration"
+            loading="lazy"
+          />
+          {IsLoadingImage && (
+            <div className="absolute w-full h-full bg-white flex justify-center items-center">
+              <LoadingSpinner className=" w-32 h-32" />
+            </div>
           )}
         </div>
         <div className="w-1/2 py-32 pl-48 pr-32 relative">
@@ -109,7 +100,7 @@ export default function Page() {
               />
               <Button type="submit">Log In</Button>
               <span>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <a
                   className="text-blue-600"
                   href="/register"

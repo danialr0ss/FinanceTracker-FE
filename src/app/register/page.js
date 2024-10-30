@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useRegisterUserMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
-import { Skeleton } from "@/components/ui/skeleton";
+import Image from "next/image";
 import PasswordInput from "@/components/passwordInput";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
@@ -52,20 +52,6 @@ export default function Page() {
       setRegisterErrorMessage(err.data.message);
     }
   };
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = imageSrc;
-
-    img.onload = () => {
-      setIsLoadingImage(false);
-    };
-
-    img.onerror = () => {
-      setIsLoadingImage(false);
-    };
-  }, [imageSrc]);
-
   useEffect(() => {
     setTimeout(() => {
       setRegisterErrorMessage("");
@@ -159,15 +145,21 @@ export default function Page() {
             </div>
           </form>
         </div>
-        <div className="w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden">
-          {isLoadingImage ? (
-            <LoadingSpinner className="w-32 h-32 flex justify-center items-center " />
-          ) : (
-            <img
-              className={`object-cover`}
-              src={imageSrc}
-              alt="Team Discussion"
-            />
+        <div className="w-1/2 border-2 rounded-xl flex justify-center items-center overflow-hidden relative">
+          <Image
+            className={`object-contain`}
+            src={imageSrc}
+            onLoad={() => setIsLoadingImage(false)}
+            onError={() => setIsLoadingImage(false)}
+            width={830}
+            height={830}
+            alt="Team Discussion"
+            loading="lazy"
+          />
+          {isLoadingImage && (
+            <div className="absolute w-full h-full bg-white flex justify-center items-center">
+              <LoadingSpinner className=" w-32 h-32" />
+            </div>
           )}
         </div>
       </div>
