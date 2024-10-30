@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useRegisterUserMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import Image from "next/image";
-import PasswordInput from "@/components/passwordInput";
+import PasswordInput from "@/components/PasswordInput";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function Page() {

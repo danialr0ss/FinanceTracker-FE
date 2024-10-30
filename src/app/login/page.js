@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useLoginMutation } from "@/store/slices/api/authApi";
 import { ActionStatus } from "@/components/ActionStatus";
 import { useRouter } from "next/navigation";
-import PasswordInput from "@/components/passwordInput";
+import PasswordInput from "@/components/PasswordInput";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Image from "next/image";
 
